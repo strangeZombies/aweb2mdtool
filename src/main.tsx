@@ -2,6 +2,7 @@ import { render } from 'preact';
 import { App } from './core/app';
 import styles from '@/index.module.css'; // 导入 CSS Modules
 
+// 创建 Shadow DOM 并渲染应用
 function createShadowDom() {
   // 这是顶层文档
   if (window.top === window) {
@@ -30,3 +31,10 @@ if (document.readyState === 'loading') {
 } else {
   createShadowDom();
 }
+
+console.log({
+  GM_cookie: GM_cookie ?? 'default value',
+  unsafeWindow: unsafeWindow ?? 'default value',
+  monkeyWindow: monkeyWindow ?? 'default value',
+  GM_addElement: GM_addElement ?? 'default value',
+});

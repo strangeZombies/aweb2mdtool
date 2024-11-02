@@ -1,7 +1,8 @@
 import { defineConfig } from 'vite';
 import { fileURLToPath, URL } from 'node:url';
 import preact from '@preact/preset-vite';
-import monkey, { cdn } from 'vite-plugin-monkey';
+import monkey, { cdn, util } from 'vite-plugin-monkey';
+import AutoImport from 'unplugin-auto-import/vite';
 import i18nextLoader from 'vite-plugin-i18next-loader';
 import tailwindcss from 'tailwindcss';
 import autoprefixer from 'autoprefixer';
@@ -36,6 +37,13 @@ export default defineConfig({
     },
   },
   plugins: [
+    AutoImport({
+      imports: [util.unimportPreset],
+      dts: './.auto-imports.d.ts',
+      eslintrc: {
+        enabled: true,
+      },
+    }),
     preact(),
     i18nextLoader({
       paths: ['./src/i18n/locales'],
@@ -55,7 +63,7 @@ export default defineConfig({
           en: '',
         },
         icon: 'https://vitejs.dev/logo.svg',
-        namespace: 'strangezombies',
+        namespace: 'https://github.com/strangezombies',
         match: ['https://www.google.com'], // "*://*/*"
         require: [
           'https://cdn.jsdelivr.net/npm/preact@latest/dist/preact.min.js',
