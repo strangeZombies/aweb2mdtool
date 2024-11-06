@@ -1,23 +1,26 @@
 {
-    "compilerOptions": {
-      "allowJs": false,
-      "esModuleInterop": false,
-      "isolatedModules": true,
-      "jsx": "react-jsx",
-      "jsxImportSource": "preact",
-      "lib": ["ES2022", "DOM", "DOM.Iterable"],
-      "module": "ESNext",
-      "moduleDetection": "force",
-      "moduleResolution": "Bundler",
-      "noEmit": true,
-      "noUncheckedIndexedAccess": true,
-      "paths": {
-        "@/*": ["./src/*"]
-      },
-      "resolveJsonModule": true,
-      "skipLibCheck": true,
-      "strict": true,
-      "target": "ES2022"
+  "compilerOptions": {
+    "allowJs": false, 
+    "esModuleInterop": false,
+    "isolatedModules": true,
+    "jsx": "react-jsx", 
+    "jsxImportSource": "preact", 
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleDetection": "force", 
+    "moduleResolution": "Bundler",
+    "noEmit": true, 
+    "noUncheckedIndexedAccess": true, 
+    "paths": {
+      "@/*": ["./src/*"],  // 这里是你之前的路径配置
     },
-    "include": ["src","./auto-imports.d.ts"]
-  }
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2022"
+  },
+  "include": [
+    "src", 
+    "./auto-imports.d.ts"  // 确保自动导入声明文件包含在编译范围内
+  ]
+}

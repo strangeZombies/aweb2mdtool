@@ -2,7 +2,7 @@ export const LANGUAGES_CONFIG = {
   en: {
     name: 'English',
     nameEn: 'English',
-    test: (code: string) => /^en/.test(code),
+    test: (code: string) => /^en/.test(code), //boolean
   },
   'zh-Hans': {
     name: '简体中文',

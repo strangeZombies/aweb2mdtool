@@ -1,4 +1,5 @@
 import { signal } from '@preact/signals';
+import { Trans } from '@/i18n'; // 引入 Trans 函数
 
 // 定义日志行的结构，包括类型、消息和索引。
 export interface LogLine {
@@ -13,6 +14,9 @@ export const logLinesSignal = signal<LogLine[]>([]);
 // 日志方法中的额外参数类型，使用 unknown 以提高类型安全性。
 type LogExtraArgs = unknown[];
 
+// 定义翻译键的类型
+type TranslationKey = string; // 根据你的项目具体定义
+
 /**
  * 全局日志记录器，处理消息的输出到控制台和用户界面。
  */
@@ -24,35 +28,39 @@ class Logger {
   /**
    * 记录信息消息。
    */
-  public info(line: string, ...args: LogExtraArgs): void {
-    this.logToConsole('info', line, ...args);
+  public info(i18nKey: TranslationKey, ...args: LogExtraArgs): void {
+    const line = Trans(i18nKey); // 使用 Trans 函数获取翻译文本
+    this.logToConsole('info', line, ...args); // 使用字面量 'info'
     this.writeBuffer({ type: 'info', line, index: this.index++ });
   }
 
   /**
    * 记录警告消息。
    */
-  public warn(line: string, ...args: LogExtraArgs): void {
-    this.logToConsole('warn', line, ...args);
+  public warn(i18nKey: TranslationKey, ...args: LogExtraArgs): void {
+    const line = Trans(i18nKey); // 使用 Trans 函数获取警告内容的翻译
+    this.logToConsole('warn', line, ...args); // 使用字面量 'warn'
     this.writeBuffer({ type: 'warn', line, index: this.index++ });
   }
 
   /**
    * 记录错误消息。
    */
-  public error(line: string, ...args: LogExtraArgs): void {
-    this.logToConsole('error', line, ...args);
+  public error(i18nKey: TranslationKey, ...args: LogExtraArgs): void {
+    const line = Trans(i18nKey); // 使用 Trans 函数获取错误内容的翻译
+    this.logToConsole('error', line, ...args); // 使用字面量 'error'
     this.writeBuffer({ type: 'error', line, index: this.index++ });
   }
 
   /**
    * 记录错误消息，并附上标准化的横幅以方便问题报告。
    */
-  public errorWithBanner(msg: string, err?: Error, ...args: LogExtraArgs): void {
+  public errorWithBanner(msgKey: TranslationKey, err?: Error, ...args: LogExtraArgs): void {
+    const msg = Trans(msgKey); // 获取错误消息的翻译
     this.error(
-      `${msg} (error: ${err?.message ?? '无'})\n` +
-        '  Report:\n' +
-        '  https://github.com/strangezombies/AWeb2MdTool/issues',
+      `${msg} (${Trans('log.errorMessage')}: ${err?.message ?? Trans('log.noMessage')})\n` +
+        `  ${Trans('log.problemCause')}\n  ${Trans('log.reportIssue')}\n` +
+        '  https://github.com/*/*/issues',
       ...args,
     );
   }
@@ -61,18 +69,18 @@ class Logger {
    * 记录调试消息到控制台。
    */
   public debug(...args: LogExtraArgs): void {
-    console.debug('[AWeb2MdTool]', ...args);
+    console.debug(`[${Trans('log.debugTool')}]`, ...args); // 使用翻译文本
   }
 
   /**
    * 根据指定的日志级别记录消息到控制台。
    */
   private logToConsole(
-    level: 'info' | 'warn' | 'error',
+    level: 'info' | 'warn' | 'error', // 确保类型为字面量类型
     line: string,
     ...args: LogExtraArgs
   ): void {
-    console[level]('[AWeb2MdTool]', line, ...args);
+    console[level](`[${Trans('log.debugTool')}]`, line, ...args); // 使用翻译文本
   }
 
   /**

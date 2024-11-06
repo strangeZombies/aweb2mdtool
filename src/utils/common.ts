@@ -12,7 +12,6 @@ export function safeJSONParse(text: string) {
     return null;
   }
 }
-
 /**
  * 使用信号(signal)来模拟 React 的 `useState` 钩子。
  */
@@ -54,4 +53,3 @@ export function cx(...classNames: (string | boolean | undefined)[]) {
 export function isEqual(obj1: any, obj2: any) {
   return JSON.stringify(obj1) === JSON.stringify(obj2);
 }
-

@@ -20,16 +20,22 @@ export const DEFAULT_APP_OPTIONS: AppOptions = {
   theme: 'system',
   debug: false,
   showControlPanel: true,
-  disabledExtensions: [
-    'HomeTimelineModule',
-    'ListTimelineModule',
-    'ListSubscribersModule',
-    'ListMembersModule',
-  ],
-  dateTimeFormat: 'YYYY-MM-DD HH:mm:ss Z',
-  language: '',
-  version: packageJson.version,
 };
+
+//e export const DEFAULT_APP_OPTIONS: AppOptions = {
+//e   theme: 'system',
+//e   debug: false,
+//e   showControlPanel: true,
+//e   disabledExtensions: [
+//e     'HomeTimelineModule',
+//e     'ListTimelineModule',
+//e     'ListSubscribersModule',
+//e     'ListMembersModule',
+//e   ],
+//e   dateTimeFormat: 'YYYY-MM-DD HH:mm:ss Z',
+//e   language: '',
+//e   version: packageJson.version,
+//e };
 
 // https://daisyui.com/docs/themes/
 export const THEMES = [

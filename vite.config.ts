@@ -1,12 +1,17 @@
 import { defineConfig } from 'vite';
 import { fileURLToPath, URL } from 'node:url';
-import preact from '@preact/preset-vite';
-import monkey, { cdn, util } from 'vite-plugin-monkey';
-import AutoImport from 'unplugin-auto-import/vite';
-import i18nextLoader from 'vite-plugin-i18next-loader';
-import tailwindcss from 'tailwindcss';
-import autoprefixer from 'autoprefixer';
-import remToPx from 'postcss-rem-to-pixel-next';
+import preact from '@preact/preset-vite'; // 用于支持 Preact 框架
+import AutoImport from 'unplugin-auto-import/vite'; // 用于自动导入
+import i18nextLoader from 'vite-plugin-i18next-loader'; // 用于加载 i18next 翻译文件
+import tailwindcss from 'tailwindcss'; // 用于自动生成 Tailwind CSS 样式
+import autoprefixer from 'autoprefixer'; // 用于自动添加 CSS 前缀
+import remToPx from 'postcss-rem-to-pixel-next'; // 用于将 rem 单位转为 px
+import legacy from '@vitejs/plugin-legacy'; // 用于支持旧版浏览器
+import monkey, { cdn, util } from 'vite-plugin-monkey'; // 用于构建 userscript
+//import i18next from 'i18next'; // 引入 i18next
+//// 通过 i18next 获取翻译函数
+//const tEn = (key: string) => i18next.t(key, { lng: 'en' }); // 获取英文翻译
+//const tZhCN = (key: string) => i18next.t(key, { lng: 'zh-CN' }); // 获取简体中文翻译
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -18,25 +23,20 @@ export default defineConfig({
   build: {
     minify: false,
     rollupOptions: {
-      // 排除 .old 文件
-      external: (id) => id.endsWith('.old'), // 使用函数来排除 .old 文件
+      external: (id) => id.endsWith('.old'),
     },
+    sourcemap: true,
   },
   css: {
     postcss: {
-      plugins: [
-        tailwindcss(),
-        autoprefixer(),
-        remToPx({ propList: ['*'] }),
-        // Use scoped CSS.
-        //prefixSelector({
-        //  prefix: '#twe-root',
-        //  exclude: [/^#twe-root/], // This may be a bug.
-        //}),
-      ],
+      plugins: [tailwindcss(), autoprefixer(), remToPx({ propList: ['*'] })],
     },
   },
   plugins: [
+    legacy({
+      renderLegacyChunks: false,
+      modernPolyfills: true,
+    }),
     AutoImport({
       imports: [util.unimportPreset],
       dts: './.auto-imports.d.ts',
@@ -46,29 +46,31 @@ export default defineConfig({
     }),
     preact(),
     i18nextLoader({
-      paths: ['./src/i18n/locales'],
-      namespaceResolution: 'basename',
+      paths: ['./src/i18n/locales'], // 本地化文件路径
+      namespaceResolution: 'basename', // 使用文件名作为命名空间
     }),
     monkey({
-      entry: 'src/main.tsx',
+      entry: 'src/main.tsx', // 入口文件
       userscript: {
         name: {
-          '': 'AWeb2MdTool',
-          'zh-CN': 'Web转为Md的工具',
-          en: 'AWeb2MdTool',
+          '': 'AWeb2MdTool', // 默认语言 (英文)
+          'zh-CN': 'WEB转MD工具', // 简体中文
+          en: 'AWeb2MdTool', // 英文
         },
         description: {
-          '': '',
-          'zh-CN': '',
-          en: '',
+          '': 'description', // 默认语言 (英文)
+          'zh-CN': 'description', // 简体中文
+          en: 'description', // 英文
         },
         icon: 'https://vitejs.dev/logo.svg',
         namespace: 'https://github.com/strangezombies',
-        match: ['https://www.google.com'], // "*://*/*"
+        match: ['https://example.com'], // 匹配 URL
         require: [
           'https://cdn.jsdelivr.net/npm/preact@latest/dist/preact.min.js',
-          'https://cdn.jsdelivr.net/npm/i18next@latest/i18next.min.js',
+          'https://cdn.jsdelivr.net/npm/@latest/.min.js',
         ],
+        version: '0.0.1', // 示例：设置脚本版本
+        author: 'strangeZombies', // 示例：设置作者
       },
       build: {
         externalGlobals: {
