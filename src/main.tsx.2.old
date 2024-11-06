@@ -1,0 +1,46 @@
+import { render } from 'preact';
+import { App } from '@/core/app';
+import styles from '@/index.module.css'; // 导入 CSS Modules
+import logger from '@/utils/logger';
+import packageJson from '@/../package.json';
+
+// 导入 TailwindCSS 的样式
+import 'tailwindcss/tailwind.css';
+
+// 创建 Shadow DOM 并渲染应用
+function createShadowDom() {
+  if (window.top === window) {
+    try {
+      // 创建一个 div 元素作为根，并设置 id
+      const rootDiv = document.createElement('div');
+      // 应用全局样式到 document
+      const globalStyles = `#${packageJson.name}Div { all: unset !important; width: auto !important; height: auto !important; }`;
+      const globalStyleElement = document.createElement('style');
+      globalStyleElement.textContent = globalStyles;
+      document.head.appendChild(globalStyleElement);
+
+      // 应用名称作为 id，以便在 CSS Modules 中使用。
+      rootDiv.id = `${packageJson.name}Div`;
+      document.documentElement.appendChild(rootDiv);
+      const shadowDOM = rootDiv.attachShadow({ mode: 'open' });
+
+      // 创建一个样式元素并添加 CSS Modules 和 TailwindCSS 的样式
+      const styleElement = document.createElement('style');
+      // 将 styles 对象中的所有样式转换为字符串
+      const cssStyles = Object.values(styles).join('\n');
+      styleElement.textContent = cssStyles; // 将样式字符串添加到样式元素中
+      shadowDOM.appendChild(styleElement);
+
+      render(<App className={styles.app} />, shadowDOM); // 将样式类名传递给 App 组件
+    } catch (error) {
+      logger.error('Error creating Shadow DOM:', error);
+    }
+  }
+}
+
+// 挂载应用
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', createShadowDom);
+} else {
+  createShadowDom();
+}

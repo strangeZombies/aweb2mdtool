@@ -1,63 +1,105 @@
-import { Fragment } from "preact";
-import { useSignal } from "@preact/signals";
-import { useTranslation } from "@/i18n";
-import { cx } from "@/utils/common";
-import { options } from "./options";
+import { Fragment } from 'preact';
+import { useSignal } from '@preact/signals';
+import { useEffect } from 'preact/hooks';
+import { options } from './options';
+import { useTranslation } from '@/i18n';
 
 // 定义组件的 props 接口
 interface AppProps {
   className?: string; // className 属性可选，类型为 string
 }
 
-export function App({ className = "" }: AppProps) {
-  // 使用类型注解
-  const { t } = useTranslation();
+export function App({ className }: AppProps) {
+  const { t } = useTranslation(); // 获取翻译函数
+  // 控制面板显示状态
+  const showControlPanel = useSignal<boolean>(options.get('showControlPanel') ?? false);
 
-  const currentTheme = useSignal(options.get("theme"));
-  const showControlPanel = useSignal(options.get("showControlPanel"));
-
-  const toggleControlPanel = () => {
-    showControlPanel.value = !showControlPanel.value;
-    options.set("showControlPanel", showControlPanel.value);
+  // 打开控制面板
+  const openControlPanel = () => {
+    showControlPanel.value = true;
+    options.set('showControlPanel', showControlPanel.value);
   };
+
+  // 关闭控制面板
+  const closeControlPanel = () => {
+    showControlPanel.value = false;
+    options.set('showControlPanel', showControlPanel.value);
+  };
+
+  // 切换控制面板状态
+  const toggleControlPanel = () => {
+    if (showControlPanel.value) {
+      closeControlPanel();
+    } else {
+      openControlPanel();
+    }
+  };
+
+  // 清理函数，关闭控制面板并移除相关 DOM 元素
+  const cleanup = () => {
+    closeControlPanel(); // 关闭控制面板
+    const controlPanelElement = document.getElementById('AWeb2MdTool');
+    if (controlPanelElement) {
+      controlPanelElement.remove();
+    }
+
+    console.log('Control panel closed and cleaned up');
+  };
+
+  useEffect(() => {
+    // 确保 GM_registerMenuCommand 仅在脚本环境中有效
+    if (typeof GM_registerMenuCommand === 'function') {
+      GM_registerMenuCommand(t('ToggleControlPanel'), toggleControlPanel);
+    }
+
+    // 返回一个清理函数，用于组件卸载时关闭控制面板并清理
+    return () => {
+      cleanup();
+    };
+  }, [t]); // 依赖数组中添加翻译函数 t，确保翻译文本更新时重新注册命令
 
   return (
     <Fragment>
+      {/* 控制按钮 */}
       <div
-        onClick={toggleControlPanel}
-        data-theme={currentTheme.value}
-        class={`group w-12 h-12 fixed top-[60%] left-[-20px] cursor-pointer bg-transparent fill-base-content ${className}`} // 使用 className
+        onClick={toggleControlPanel} // 切换控制面板的显示状态
+        className={`group fixed top-1/2 left-[-20px] w-12 h-12 cursor-pointer bg-transparent fill-base-content 
+                    ${className}`}
       >
-        <div class="w-full h-full origin origin-[bottom_center] transition-all duration-200 group-hover:translate-x-[5px] group-hover:rotate-[20deg] opacity-50 group-hover:opacity-90">
-          {/* <CatIcon /> */}
+        <div
+          className="w-full h-full origin-bottom-center transition-all duration-200 
+                        group-hover:translate-x-[5px] group-hover:rotate-[20deg] 
+                        opacity-50 group-hover:opacity-90"
+        >
+          {/* 你可以在这里添加一个图标 */}
         </div>
       </div>
-      <section
-        data-theme={currentTheme.value}
-        class={cx(
-          "card card-compact bg-base-100 fixed border shadow-xl w-80 leading-loose text-base-content px-4 py-3 rounded-box border-solid border-neutral-content border-opacity-50 left-8 top-8 transition-transform duration-500",
-          showControlPanel.value
-            ? "translate-x-0 transform-none"
-            : "translate-x-[-500px]",
-        )}
-      >
-        <header class="flex items-center h-9">
-          <h2 class="font-semibold leading-none text-xl m-0 flex-grow">
-            Web Exporter
-          </h2>
-          <div
-            onClick={toggleControlPanel}
-            class="w-9 h-9 cursor-pointer flex justify-center items-center transition-colors duration-200 rounded-full hover:bg-base-200"
-          >
-            {/* <IconX /> */}
+
+      {/* 这个 div 是全屏虚化窗口 */}
+      {showControlPanel.value && (
+        <div className="fixed top-0 left-0 w-full h-full bg-black/30 backdrop-blur-lg transition-all duration-300">
+          {/* 这个 div 作为背景虚化效果 */}
+        </div>
+      )}
+
+      {/* 控制面板div */}
+      {showControlPanel.value && (
+        <div
+          id="AWeb2MdTool" // 使用指定的 id
+          className="fixed top-20 left-0 w-full bg-white/80 shadow-lg p-4 rounded-lg transition-all duration-300"
+        >
+          {/* 控制面板内容 */}
+          <div className="flex justify-between items-center">
+            <div className="text-lg">{t('ControlPanelContent')}</div> {/* 这里也可以用翻译 */}
+            <button
+              onClick={toggleControlPanel} // 切换控制面板的显示状态
+              className="bg-red-500 text-white p-2 rounded-md hover:bg-red-700 transition"
+            >
+              {t('Close')} {/* 按钮的文本翻译 */}
+            </button>
           </div>
-        </header>
-        <p class="text-sm text-base-content text-opacity-70 mb-1 leading-none">
-          {t("Browse around to capture more data.")}
-        </p>
-        <div class="divider mt-0 mb-0"></div>
-        <main>{/* Extensions UI */}</main>
-      </section>
+        </div>
+      )}
     </Fragment>
   );
 }

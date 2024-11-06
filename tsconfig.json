@@ -1,18 +1,18 @@
 {
   "compilerOptions": {
-    "allowJs": false, 
+    "allowJs": false,
     "esModuleInterop": false,
     "isolatedModules": true,
-    "jsx": "react-jsx", 
-    "jsxImportSource": "preact", 
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "moduleDetection": "force", 
+    "moduleDetection": "force",
     "moduleResolution": "Bundler",
-    "noEmit": true, 
-    "noUncheckedIndexedAccess": true, 
+    "noEmit": true,
+    "noUncheckedIndexedAccess": true,
     "paths": {
-      "@/*": ["./src/*"],  // 这里是你之前的路径配置
+      "@/*": ["./src/*"] // 这里是你之前的路径配置
     },
     "resolveJsonModule": true,
     "skipLibCheck": true,
@@ -20,7 +20,7 @@
     "target": "ES2022"
   },
   "include": [
-    "src", 
-    "./auto-imports.d.ts"  // 确保自动导入声明文件包含在编译范围内
+    "src",
+    "./auto-imports.d.ts", // 确保自动导入声明文件包含在编译范围内
   ]
 }

@@ -1,11 +1,5 @@
 {
   "AWeb2MdTool":"AWeb2MdTool",
-    "info": "Info",
-    "warn": "Warning",
-    "error": "Error",
-    "errorMessage": "Message",
-    "noMessage": "None",
-    "problemCause": "This may be a problem caused by any reason.",
-    "reportIssue": "Please file an issue on GitHub:",
-    "debugTool": "AWeb2MdTool"
+  "ToggleControlPanel":"ToggleControlPanel",  
+"Close":"close"
 }

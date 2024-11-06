@@ -21,22 +21,6 @@ export const DEFAULT_APP_OPTIONS: AppOptions = {
   debug: false,
   showControlPanel: true,
 };
-
-//e export const DEFAULT_APP_OPTIONS: AppOptions = {
-//e   theme: 'system',
-//e   debug: false,
-//e   showControlPanel: true,
-//e   disabledExtensions: [
-//e     'HomeTimelineModule',
-//e     'ListTimelineModule',
-//e     'ListSubscribersModule',
-//e     'ListMembersModule',
-//e   ],
-//e   dateTimeFormat: 'YYYY-MM-DD HH:mm:ss Z',
-//e   language: '',
-//e   version: packageJson.version,
-//e };
-
 // https://daisyui.com/docs/themes/
 export const THEMES = [
   'system',
@@ -52,7 +36,7 @@ export const THEMES = [
   'winter',
 ] as const;
 
-const LOCAL_STORAGE_KEY = packageJson.name;
+const LOCAL_STORAGE_KEY = packageJson.name; // 这里的 key 应与 aweb2mdtool 对应的键匹配
 
 /**
  * Persist app options to browser local storage.
@@ -66,9 +50,13 @@ export class AppOptionsManager {
    */
   public signal = new Signal(0);
 
-  constructor() {
-    this.loadAppOptions();
-  }
+  //e constructor() {
+  //e   this.loadAppOptions();
+  //e   // 检测 debug 标志，若为 true，则删除所有缓存
+  //e   // if (this.appOptions.debug) {
+  //e   //   this.clearAllLocalStorage();
+  //e   // }
+  //e }
 
   public get<T extends keyof AppOptions>(key: T, defaultValue?: AppOptions[T]) {
     return this.appOptions[key] ?? defaultValue;
@@ -88,19 +76,19 @@ export class AppOptionsManager {
       ...safeJSONParse(localStorage.getItem(LOCAL_STORAGE_KEY) || '{}'),
     };
 
-    const oldVersion = this.appOptions.version ?? '';
-    const newVersion = DEFAULT_APP_OPTIONS.version ?? '';
+    //e const oldVersion = this.appOptions.version ?? '';
+    //e const newVersion = DEFAULT_APP_OPTIONS.version ?? '';
 
-    // Migrate from v1.0 to v1.1.
-    if (newVersion.startsWith('1.1') && oldVersion.startsWith('1.0')) {
-      this.appOptions.disabledExtensions = [
-        ...(this.appOptions.disabledExtensions ?? []),
-        'HomeTimelineModule',
-        'ListTimelineModule',
-      ];
-      logger.info(`App options migrated from v${oldVersion} to v${newVersion}`);
-      setTimeout(() => this.saveAppOptions(), 0);
-    }
+    //e  Migrate from v1.0 to v1.1.
+    //e if (newVersion.startsWith('1.1') && oldVersion.startsWith('1.0')) {
+    //e   this.appOptions.disabledExtensions = [
+    //e     ...(this.appOptions.disabledExtensions ?? []),
+    //e     'HomeTimelineModule',
+    //e     'ListTimelineModule',
+    //e   ];
+    //e   logger.info(`App options migrated from v${oldVersion} to v${newVersion}`);
+    //e   setTimeout(() => this.saveAppOptions(), 0);
+    //e }
 
     this.previous = { ...this.appOptions };
     logger.info('App options loaded', this.appOptions);
@@ -127,5 +115,17 @@ export class AppOptionsManager {
     this.previous = { ...this.appOptions };
     logger.debug('App options saved', this.appOptions);
     this.signal.value++;
+  }
+
+  /**
+   * 清除所有的 localStorage 数据
+   */
+  private clearAllLocalStorage() {
+    logger.info('Clearing all localStorage data (debug mode)...');
+
+    // 删除所有的 localStorage 数据
+    localStorage.clear();
+
+    logger.debug('All localStorage data cleared.');
   }
 }

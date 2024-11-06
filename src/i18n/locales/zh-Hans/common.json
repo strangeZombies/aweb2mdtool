@@ -1,10 +1,5 @@
 {
   "AWeb2MdTool": "WEB转MD工具",
-  "info": "信息",
-  "warn": "警告",
-  "error": "错误",
-  "errorMessage": "消息",
-  "noMessage": "无",
-  "problemCause": "这可能是由任何原因引起的问题。",
-  "reportIssue": "请在 GitHub 上提交问题:"
+  "ToggleControlPanel": "切换控制面板",
+  "Close": "关闭"
 }

@@ -7,11 +7,7 @@ import tailwindcss from 'tailwindcss'; // 用于自动生成 Tailwind CSS 样式
 import autoprefixer from 'autoprefixer'; // 用于自动添加 CSS 前缀
 import remToPx from 'postcss-rem-to-pixel-next'; // 用于将 rem 单位转为 px
 import legacy from '@vitejs/plugin-legacy'; // 用于支持旧版浏览器
-import monkey, { cdn, util } from 'vite-plugin-monkey'; // 用于构建 userscript
-//import i18next from 'i18next'; // 引入 i18next
-//// 通过 i18next 获取翻译函数
-//const tEn = (key: string) => i18next.t(key, { lng: 'en' }); // 获取英文翻译
-//const tZhCN = (key: string) => i18next.t(key, { lng: 'zh-CN' }); // 获取简体中文翻译
+import monkey, { cdn, util } from 'vite-plugin-monkey'; // 用于构建 userscript;
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -67,7 +63,9 @@ export default defineConfig({
         match: ['https://example.com'], // 匹配 URL
         require: [
           'https://cdn.jsdelivr.net/npm/preact@latest/dist/preact.min.js',
-          'https://cdn.jsdelivr.net/npm/@latest/.min.js',
+          'https://cdn.jsdelivr.net/npm/@latest/latest.min.js',
+          'https://cdn.jsdelivr.net/npm/preact@latest/hooks/dist/hooks.umd.js',
+          'https://cdn.jsdelivr.net/npm/@preact/signals-core@latest/dist/signals-core.min.js',
         ],
         version: '0.0.1', // 示例：设置脚本版本
         author: 'strangeZombies', // 示例：设置作者
@@ -76,6 +74,8 @@ export default defineConfig({
         externalGlobals: {
           i18next: cdn.jsdelivr('i18next', 'dist/i18next.min.js'),
           preact: cdn.jsdelivr('preact', 'dist/preact.min.js'),
+          'preact/hooks': cdn.jsdelivr('preact', 'hooks/dist/hooks.umd.js'),
+          '@preact/signals': cdn.jsdelivr('signals-core', 'dist/signals-core.min.js'),
         },
       },
     }),

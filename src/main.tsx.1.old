@@ -1,41 +1,48 @@
+import { twind, cssom, observe } from '@twind/core';
+import 'construct-style-sheets-polyfill'; // 用于支持 shadowroot.adoptedStyleSheets
+import config from '../twind.config';
+
 import { render } from 'preact';
-import { App } from './core/app';
-import styles from '@/index.module.css'; // 导入 CSS Modules
+import { App } from '@/core/app';
+import logger from '@/utils/logger';
+import packageJson from '../package.json';
 
-// 创建 Shadow DOM 并渲染应用
+// 创建 twind 实例，使用 CSSStyleSheet
+const sheet = cssom(new CSSStyleSheet());
+const tw = twind(config, sheet);
+
+// Function to create Shadow DOM and render the application
 function createShadowDom() {
-  // 这是顶层文档
   if (window.top === window) {
-    // 创建一个 div 元素作为根
-    const rootDiv = document.createElement('div');
-    rootDiv.id = 'myRootDiv'; // 设置 id 属性
-    document.documentElement.appendChild(rootDiv);
-    // 启用 Shadow DOM
-    const shadowDOM = rootDiv.attachShadow({ mode: 'open' });
+    try {
+      // 创建一个 div 元素作为根，并设置 id
+      const rootDiv = document.createElement('div');
+      const globalStyles = `#${packageJson.name}Div { all: unset !重要; width: auto !important; height: auto !important; }`;
+      const globalStyleElement = document.createElement('style');
+      globalStyleElement.textContent = globalStyles;
+      document.head.appendChild(globalStyleElement);
 
-    // 创建一个样式元素并添加 CSS Modules 的样式
-    const styleElement = document.createElement('style');
-    styleElement.textContent = `
-      /* 将 CSS Modules 的样式添加到样式元素中 */
-      ${styles}
-    `;
-    shadowDOM.appendChild(styleElement);
+      rootDiv.id = `${packageJson.name}Div`;
+      document.documentElement.appendChild(rootDiv);
+      const shadowDOM = rootDiv.attachShadow({ mode: 'open' });
 
-    // 渲染应用到 Shadow DOM
-    render(<App className={styles.app} />, shadowDOM); // 将样式类名传递给 App 组件
+      // Ensure that the style sheet is correctly adopted by Shadow DOM
+      shadowDOM.adoptedStyleSheets = [sheet.target];
+
+      // Observe and apply styles using twind
+      observe(tw, shadowDOM);
+
+      // Render Preact application into Shadow DOM
+      render(<App className={tw('app')} />, shadowDOM);
+    } catch (error) {
+      logger.error('Error creating Shadow DOM:', error);
+    }
   }
 }
 
-// 挂载应用
+// Mount the application
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', createShadowDom);
 } else {
   createShadowDom();
 }
-
-//console.log({
-//  GM_cookie: GM_cookie ?? 'default value',
-//  unsafeWindow: unsafeWindow ?? 'default value',
-//  monkeyWindow: monkeyWindow ?? 'default value',
-//  GM_addElement: GM_addElement ?? 'default value',
-//});
