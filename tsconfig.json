@@ -21,6 +21,6 @@
   },
   "include": [
     "src",
-    "./auto-imports.d.ts", // 确保自动导入声明文件包含在编译范围内
+    "./auto-imports.d.ts", "global.d.ts", // 确保自动导入声明文件包含在编译范围内
   ]
 }

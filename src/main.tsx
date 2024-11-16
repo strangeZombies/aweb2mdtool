@@ -2,43 +2,68 @@ import { render } from 'preact';
 import { App } from '@/core/app';
 import logger from '@/utils/logger';
 import packageJson from '@/../package.json';
-import { Scope } from 'react-shadow-scope';
 import styles from '@/index.css?inline';
 
-async function createShadowDom() {
-  if (window.top === window) {
-    try {
-      // 创建一个 div 元素作为根，并设置 id
-      const rootDiv = document.createElement('div');
-      rootDiv.id = `${packageJson.name}Div`;
-      // 应用样式以防止根 div 受到外部页面样式的影响
-      const globalStyles = `
-        #${packageJson.name}Div {
-          all: unset !important;
-          width: auto;
-          height: auto;
-        }
-      `;
-      const globalStyleElement = document.createElement('style');
-      globalStyleElement.textContent = globalStyles;
-      document.head.appendChild(globalStyleElement);
-      document.body.appendChild(rootDiv);
-      // 使用 react-shadow-scope 渲染 App 组件
-      render(
-        <Scope stylesheet={styles} tag="my-element">
-          <App />
-        </Scope>,
-        rootDiv,
-      );
-    } catch (error) {
-      logger.error('Error creating Shadow DOM:', error);
+const ROOT_DIV_ID = `${packageJson.name}Div`;
+
+/**
+ * 创建全局样式元素
+ * @returns {HTMLStyleElement} 全局样式元素
+ */
+function createGlobalStyles() {
+  const globalStyles = `
+    #${ROOT_DIV_ID} {
+      all: unset !important;
+      width: auto;
+      height: auto;
     }
+  `;
+  const styleElement = document.createElement('style');
+  styleElement.textContent = globalStyles;
+  return styleElement;
+}
+
+/**
+ * 创建并挂载 Shadow DOM
+ * 只有在顶级窗口中才会执行此操作，以防止在 iframe 中重复创建
+ */
+function createShadowDom() {
+  if (window.top !== window.self) {
+    // 如果在 iframe 中，则不执行
+    return;
+  }
+
+  try {
+    // 创建根 div
+    const rootDiv = document.createElement('div');
+    rootDiv.id = ROOT_DIV_ID;
+
+    // 添加全局样式元素到文档头部
+    document.head.appendChild(createGlobalStyles());
+
+    // 将根 div 添加到文档主体
+    document.body.appendChild(rootDiv);
+
+    // 创建 Shadow DOM
+    const shadowRoot = rootDiv.attachShadow({ mode: 'open' });
+
+    // 创建并注入 Shadow DOM 样式
+    const shadowStyle = document.createElement('style');
+    shadowStyle.textContent = styles; // 使用导入的样式
+    shadowRoot.appendChild(shadowStyle);
+
+    // 渲染应用到 Shadow DOM
+    render(<App />, shadowRoot);
+
+    logger.info('Shadow DOM created and App rendered.');
+  } catch (error) {
+    logger.error('Error creating Shadow DOM:', error);
   }
 }
 
-// 挂载应用
+// 挂载应用，根据文档的加载状态选择合适的时机执行创建操作
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', createShadowDom);
+  document.addEventListener('DOMContentLoaded', createShadowDom, { once: true });
 } else {
   createShadowDom();
 }

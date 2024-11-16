@@ -8,7 +8,7 @@ import autoprefixer from 'autoprefixer'; // 用于自动添加 CSS 前缀
 import remToPx from 'postcss-rem-to-pixel-next'; // 用于将 rem 单位转为 px
 import legacy from '@vitejs/plugin-legacy'; // 用于支持旧版浏览器
 import monkey, { cdn, util } from 'vite-plugin-monkey'; // 用于构建 userscript;
-
+import { shadowStyle } from 'vite-plugin-shadow-style';
 // https://vitejs.dev/config/
 export default defineConfig({
   resolve: {
@@ -20,6 +20,7 @@ export default defineConfig({
     minify: false,
     rollupOptions: {
       external: (id) => id.endsWith('.old'),
+      plugins: [shadowStyle()],
     },
     sourcemap: true,
   },
@@ -69,6 +70,7 @@ export default defineConfig({
         ],
         version: '0.0.1', // 示例：设置脚本版本
         author: 'strangeZombies', // 示例：设置作者
+        grant: ['unsafeWindow', 'GM_getValue', 'GM_setValue', 'GM_listValues'],
       },
       build: {
         externalGlobals: {

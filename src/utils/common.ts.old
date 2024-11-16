@@ -1,5 +1,6 @@
 import { useSignal } from '@preact/signals';
 import logger from './logger';
+
 /**
  * 安全的 JSON 解析,带有错误处理。
  */
@@ -10,21 +11,6 @@ export function safeJSONParse(text: string) {
     logger.error((e as Error).message);
     return null;
   }
-}
-
-/**
- * A signal representing a boolean value.
- *//**
- * A signal representing a boolean value.
- */
-export function useToggle(defaultValue = false) {
-  const signal = useSignal(defaultValue);
-
-  const toggle = () => {
-    signal.value = !signal.value;
-  };
-
-  return [signal.value, toggle, signal] as const;
 }
 /**
  * 使用信号(signal)来模拟 React 的 `useState` 钩子。
@@ -37,6 +23,19 @@ export function useSignalState<T>(value: T) {
   };
 
   return [signal.value, updateSignal, signal] as const;
+}
+
+/**
+ * 一个表示布尔值的信号。
+ */
+export function useToggle(defaultValue = false) {
+  const signal = useSignal(defaultValue);
+
+  const toggle = () => {
+    signal.value = !signal.value;
+  };
+
+  return [signal.value, toggle, signal] as const;
 }
 
 /**

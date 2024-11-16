@@ -1,100 +1,59 @@
 import { Fragment } from 'preact';
-import { useSignal } from '@preact/signals';
 import { useEffect } from 'preact/hooks';
+import { useSignal } from '@preact/signals';
+//import { ErrorBoundary } from '@/components/error-boundary';
+//import { useTranslation } from '@/i18n';
+import { cx } from '@/utils/common';
+import logger from '@/utils/logger';
 import { options } from './options';
 import { useTranslation } from '@/i18n';
-
-export function App() {
-  const { t } = useTranslation(); // 获取翻译函数
-  // 控制模态框显示状态
-  const showControlPanel = useSignal<boolean>(options.get('showControlPanel') ?? true);
-
-  // 打开模态框
-  const openControlPanel = () => {
-    showControlPanel.value = true;
-    options.set('showControlPanel', true);
-  };
-
-  // 关闭模态框
-  const closeControlPanel = () => {
-    showControlPanel.value = false;
-    options.set('showControlPanel', false);
-  };
-
-  // 切换模态框状态
+export const App = () => {
+  const { t } = useTranslation();
   const toggleControlPanel = () => {
-    if (showControlPanel.value) {
-      closeControlPanel();
-    } else {
-      openControlPanel();
-    }
+    logger.info(options.get('showControlPanel', 'showControlPanel.value'));
   };
-
-  // 清理函数，关闭模态框并移除相关 DOM 元素
-  const cleanup = () => {
-    closeControlPanel(); // 关闭模态框
-    const modalElement = document.getElementById('mo');
-    if (modalElement) {
-      modalElement.remove();
-    }
-
-    console.log('Modal closed and cleaned up');
-  };
-
-  useEffect(() => {
-    // 确保 GM_registerMenuCommand 仅在脚本环境中有效
-    if (typeof GM_registerMenuCommand === 'function') {
-      GM_registerMenuCommand(t('ToggleControlPanel'), toggleControlPanel);
-    }
-
-    // 返回一个清理函数，用于组件卸载时关闭模态框并清理
-    return () => {
-      cleanup();
-    };
-  }, [t]); // 依赖数组中添加翻译函数 t，确保翻译文本更新时重新注册命令
-
+  console.log('1212');
+  logger.info(options.get('language', 'en-US'));
   return (
     <Fragment>
-      {/* 控制模态框的按钮 */}
-      <button
-        className={`btn`}
-        onClick={openControlPanel}
-        aria-label={t('OpenControlPanel')} // 可访问性：为按钮添加描述
+      {/* To show and hide the main UI. */}
+      <div
+        onClick={toggleControlPanel}
+        data-theme="cyberpunk"
+        class="group w-12 h-12 fixed top-[60%] left-[-20px] cursor-pointer bg-transparent fill-base-content"
       >
-        {t('OpenModal')} {/* 按钮文本翻译 */}
-      </button>
+        <div class="w-full h-full origin origin-[bottom_center] transition-all duration-200 group-hover:translate-x-[5px] group-hover:rotate-[20deg] opacity-50 group-hover:opacity-90">
+          RMdIcon
+        </div>
+      </div>
 
-      {/* 将模态框内容封装到Shadow DOM中 */}
-      {showControlPanel.value && (
-        <dialog
-          data-theme="light"
-          className={`modal`}
-          id="mo"
-          open
-          aria-labelledby="modal-title" // 可访问性：为模态框添加标题
-          aria-describedby="modal-description" // 可访问性：为模态框添加描述
-        >
-          <div className="modal-box w-11/12 max-w-5xl">
-            <h3 id="modal-title" className="font-bold text-lg">
-              {t('ModalTitle')}
-            </h3>
-            {/* 标题翻译 */}
-            <p id="modal-description" className="py-4">
-              {t('ModalDescription')}
-            </p>
-            {/* 描述翻译 */}
-            <div className="modal-action">
-              <button
-                className={`btn`}
-                onClick={closeControlPanel}
-                aria-label={t('Close')} // 可访问性：为关闭按钮添加描述
-              >
-                {t('Close')} {/* 关闭按钮翻译 */}
-              </button>
-            </div>
+      {/* The main UI block. */}
+      <section
+        data-theme="cyberpunk"
+        class={cx(
+          'card card-compact bg-base-100 fixed border shadow-xl w-80 leading-loose text-base-content px-4 py-3 rounded-box border-solid border-neutral-content border-opacity-50 left-8 top-8 transition-transform duration-500 translate-x-0 transform-none',
+        )}
+      >
+        {/* Card title. */}
+        <header class="flex items-center h-9">
+          <h2 class="font-semibold leading-none text-xl m-0 flex-grow">Web Exporter</h2>
+          <div
+            onClick={toggleControlPanel}
+            class="w-9 h-9 cursor-pointer flex justify-center items-center transition-colors duration-200 rounded-full hover:bg-base-200"
+          >
+            IconX
           </div>
-        </dialog>
-      )}
+        </header>
+        <p class="text-sm text-base-content text-opacity-70 mb-1 leading-none">
+          {t('Browse around to capture more data.')}
+        </p>
+        <div class="divider mt-0 mb-0"></div>
+        {/* Extensions UI. */}
+        <main></main>
+      </section>
     </Fragment>
+    //E <Fragment>
+    //E   <div onClick={toggleControlPanel}>sample</div>
+    //E </Fragment>
   );
-}
+};

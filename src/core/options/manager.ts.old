@@ -1,0 +1,143 @@
+import { Signal } from '@preact/signals';
+import { isEqual, safeJSONParse } from '@/utils/common';
+import logger from '@/utils/logger';
+import packageJson from '@/../package.json';
+
+// 假设 AppOptions 类型如下
+export interface AppOptions {
+  theme?: string;
+  debug?: boolean;
+  showControlPanel?: boolean;
+  showToggleButton?: boolean;
+  language?: string;
+  version?: string;
+}
+/**
+ * Type for global app options.
+ */
+//e export interface AppOptions {
+//e   theme?: string;
+//e   debug?: boolean;
+//e   showControlPanel?: boolean;
+//e   showToggleButton?: boolean;
+//e   disabledExtensions?: string[];
+//e   dateTimeFormat?: string;
+//e   language?: string;
+//e   version?: string;
+//e }
+
+export const DEFAULT_APP_OPTIONS: AppOptions = {
+  theme: 'emerald',
+  debug: false,
+  showControlPanel: true,
+  showToggleButton: true,
+  language: '',
+  version: packageJson.version,
+};
+// https://daisyui.com/docs/themes/
+export const THEMES = [
+  //'system',
+  'cupcake',
+  'dark',
+  'emerald',
+  'cyberpunk',
+  'valentine',
+  'lofi',
+  'dracula',
+  'cmyk',
+  'business',
+  'winter',
+] as const;
+
+const GM_VALUE_KEY = packageJson.name; // 这里的 key 应与 aweb2mdtool 对应的键匹配
+
+/**
+ * Persist app options to browser local storage.
+ */
+export class AppOptionsManager {
+  private appOptions: AppOptions = { ...DEFAULT_APP_OPTIONS };
+  private previous: AppOptions = { ...DEFAULT_APP_OPTIONS };
+
+  /**
+   * Signal for subscribing to option changes.
+   */
+  public signal = new Signal(0);
+
+  constructor() {
+    this.loadAppOptions();
+  }
+
+  // 修改 get 方法支持批量获取选项
+  public get<T extends keyof AppOptions>(keys: T[], defaultValue?: AppOptions) {
+    if (!Array.isArray(keys)) {
+      throw new Error('Expected an array for keys');
+    }
+
+    const result: Partial<AppOptions> = {};
+
+    // 循环处理每个键
+    keys.forEach((key) => {
+      result[key] = this.appOptions[key] ?? defaultValue?.[key];
+    });
+
+    return result;
+  }
+
+  // 设置多个选项
+  public set<T extends keyof AppOptions>(
+    key: T | Record<string, AppOptions[T]>,
+    value?: AppOptions[T],
+  ) {
+    if (typeof key === 'object') {
+      // 如果传入的是一个对象，批量设置多个选项
+      Object.keys(key).forEach((k) => {
+        this.appOptions[k as keyof AppOptions] = key[k as keyof AppOptions];
+      });
+    } else {
+      // 如果传入的是单个键值对
+      this.appOptions[key] = value;
+    }
+    this.saveAppOptions();
+  }
+
+  /**
+   * Read app options from local storage.
+   */
+  private async loadAppOptions() {
+    const storedOptions = await GM.getValue(GM_VALUE_KEY, '{}');
+    this.appOptions = {
+      ...this.appOptions,
+      ...safeJSONParse(storedOptions),
+    };
+
+    this.previous = { ...this.appOptions };
+    logger.info('App options loaded', this.appOptions);
+    this.signal.value++;
+  }
+
+  /**
+   * Write app options to local storage.
+   */
+  private async saveAppOptions() {
+    const oldValue = this.previous;
+    const newValue = {
+      ...this.appOptions,
+      version: packageJson.version,
+    };
+
+    if (isEqual(oldValue, newValue)) {
+      return;
+    }
+
+    this.appOptions = newValue;
+    await GM.setValue(GM_VALUE_KEY, JSON.stringify(this.appOptions));
+
+    this.previous = { ...this.appOptions };
+    logger.debug('App options saved', this.appOptions);
+    this.signal.value++;
+  }
+
+
+}
+
+export const options = new AppOptionsManager();
