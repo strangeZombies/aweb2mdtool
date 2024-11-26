@@ -61,12 +61,13 @@ export default defineConfig({
         },
         icon: 'https://vitejs.dev/logo.svg',
         namespace: 'https://github.com/strangezombies',
-        match: ['https://example.com'], // 匹配 URL
+        match: ['https://*/*', 'http://*/*'], // 匹配 URL
         require: [
           'https://cdn.jsdelivr.net/npm/preact@latest/dist/preact.min.js',
           'https://cdn.jsdelivr.net/npm/@latest/latest.min.js',
           'https://cdn.jsdelivr.net/npm/preact@latest/hooks/dist/hooks.umd.js',
           'https://cdn.jsdelivr.net/npm/@preact/signals-core@latest/dist/signals-core.min.js',
+          '',
         ],
         version: '0.0.1', // 示例：设置脚本版本
         author: 'strangeZombies', // 示例：设置作者

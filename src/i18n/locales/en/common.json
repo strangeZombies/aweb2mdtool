@@ -1,5 +1,18 @@
 {
-  "AWeb2MdTool":"AWeb2MdTool",
-  "ToggleControlPanel":"ToggleControlPanel",  
-"Close":"close"
-}
+  "AWeb2MdTool": "a web -> markdown tool",
+  "toggleMenu": "toggle control panel",
+  "Close": "close",
+  "Theme": "theme",
+  "Settings": "settings",
+  "General": "general",
+  "Language": "language",
+  "ObsidianSoftwareSettings": "obsidian software settings",
+  "VaultSettings": "vault settings",
+  "RelativeFolder": "relative folder",
+  "BaseTagSettings": "base tag settings",
+  "ShowToggleButton": "show toggle button",
+  "ShowToggleButtonTips": "The Interface will be hidden or displayed immediately, You can reopen it from the menu.",
+  "DebugMode": "debug mode",
+  "DebugModeTips": "Enable this option to debug the script and check for errors.",
+  "ExportToMd": "export to markdown"
+  }

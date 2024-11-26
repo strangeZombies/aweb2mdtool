@@ -1,5 +1,5 @@
 import { Signal } from '@preact/signals';
-import { safeJSONParse } from '@/utils/common';
+import { isEqual, safeJSONParse } from '@/utils/common';
 import logger from '@/utils/logger';
 import packageJson from '@/../package.json';
 
@@ -13,6 +13,7 @@ export interface AppOptions {
   version?: string;
 }
 
+// 默认应用选项
 export const DEFAULT_APP_OPTIONS: AppOptions = {
   theme: 'emerald',
   debug: false,
@@ -21,9 +22,9 @@ export const DEFAULT_APP_OPTIONS: AppOptions = {
   language: '',
   version: packageJson.version,
 };
-// https://daisyui.com/docs/themes/
+
+// 可用主题列表
 export const THEMES = [
-  //'system',
   'cupcake',
   'dark',
   'emerald',
@@ -40,25 +41,49 @@ const GM_MAIN_VALUE = packageJson.name; // 这里的 key 应与 aweb2mdtool 对�
 
 export class AppOptionsManager {
   private appOptions: AppOptions = { ...DEFAULT_APP_OPTIONS };
+  private previous: AppOptions = { ...DEFAULT_APP_OPTIONS };
   public signal = new Signal(0);
 
   constructor() {
     this.loadAppOptions();
   }
-  public get<T extends keyof AppOptions>(key: T, defaultValue?: AppOptions[T]) {
+  // 修改 get 方法支持批量获取选项
+
+  public get<T extends keyof AppOptions>(key: T, defaultValue?: AppOptions[T]): AppOptions[T] {
     return this.appOptions[key] ?? defaultValue;
   }
-  private loadAppOptions() {
-    const savedOptions = GM_getValue(GM_MAIN_VALUE, '{}'); // 使用 GM_getValue 获取存储的值
-    this.appOptions = {
-      ...this.appOptions,
-      ...safeJSONParse(savedOptions), // 合并默认选项和保存的选项
-    };
-    const oldVersion = this.appOptions.version ?? '';
-    const newVersion = DEFAULT_APP_OPTIONS.version ?? '';
 
-    logger.info(`App options migrated from v${oldVersion} to v${newVersion}`);
+  public set<T extends keyof AppOptions>(key: T, value: AppOptions[T]): void {
+    this.appOptions[key] = value;
+    this.saveAppOptions();
+  }
+
+  public getValue(): string {
+    return GM_getValue(GM_MAIN_VALUE, '{}');
+  }
+
+  private loadAppOptions(): void {
+    const savedOptions = GM_getValue(GM_MAIN_VALUE, '{}');
+    const parsedOptions = safeJSONParse(savedOptions);
+
+    // 合并默认选项和保存的选项
+    this.appOptions = { ...this.appOptions, ...parsedOptions };
     logger.info('App options loaded', this.appOptions);
     this.signal.value++;
+  }
+
+  private saveAppOptions(): void {
+    const newValue = {
+      ...this.appOptions,
+      version: packageJson.version,
+    };
+
+    // 仅在新旧值不相等时保存
+    if (!isEqual(this.previous, newValue)) {
+      GM_setValue(GM_MAIN_VALUE, JSON.stringify(newValue));
+      this.previous = { ...newValue };
+      logger.debug('App options saved', this.appOptions);
+      this.signal.value++;
+    }
   }
 }

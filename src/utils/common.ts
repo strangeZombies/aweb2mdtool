@@ -54,3 +54,7 @@ export function cx(...classNames: (string | boolean | undefined)[]) {
 export function isEqual(obj1: any, obj2: any) {
   return JSON.stringify(obj1) === JSON.stringify(obj2);
 }
+
+export function capitalizeFirstLetter(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}

@@ -1,7 +1,7 @@
 {
   "name": "aweb2mdtool",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -32,6 +32,7 @@
     "postcss-prefix-selector": "^2.1.0",
     "postcss-rem-to-pixel-next": "^5.0.3",
     "tailwindcss": "^3.4.14",
+    "turndown": "^7.2.0",
     "typescript": "^5.4.5",
     "typescript-eslint": "^8.11.0",
     "unplugin-auto-import": "^0.18.3",

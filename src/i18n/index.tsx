@@ -10,7 +10,6 @@ export * from './detector';
 /**
  * A simplified implementation of react-i18next's `useTranslation` for Preact.
  *
- * @see https://react.i18next.com/latest/usetranslation-hook
  * @param namespace The namespace to use for the translation.
  * @param language (optional) A specific language to use. If not provided, auto-detection will be used.
  * @returns An object with the `t` function and the `i18n` instance.
@@ -18,8 +17,8 @@ export * from './detector';
 export function useTranslation(ns?: Namespace, language?: string) {
   const i18n = initI18n();
 
-  // If language is provided, use it; otherwise, auto-detect the language.
-  const languageToUse = language ?? detectBrowserLanguage(); // Use detectBrowserLanguage for auto-detection
+  // Determine the language to use
+  const languageToUse = language || detectBrowserLanguage();
 
   // Change language if needed.
   useEffect(() => {
@@ -28,7 +27,7 @@ export function useTranslation(ns?: Namespace, language?: string) {
     }
   }, [i18n, languageToUse]);
 
-  // Bind t function to namespace (acts also as rerender trigger *when* args have changed).
+  // State to hold the t function
   const [t, setT] = useState(() => i18n.getFixedT(null, ns ?? null));
 
   // Do not update state if component is unmounted.
@@ -44,11 +43,12 @@ export function useTranslation(ns?: Namespace, language?: string) {
       setT(() => i18n.getFixedT(null, ns ?? null));
     }
 
-    function boundReset() {
+    const boundReset = () => {
       if (isMountedRef.current) {
+        // Update t function if the component is still mounted
         setT(() => i18n.getFixedT(null, ns ?? null));
       }
-    }
+    };
 
     // Bind events to trigger change.
     i18n.on('languageChanged', boundReset);
@@ -58,7 +58,7 @@ export function useTranslation(ns?: Namespace, language?: string) {
       isMountedRef.current = false;
       i18n.off('languageChanged', boundReset);
     };
-  }, [ns]);
+  }, [ns, i18n]);
 
   return { t, i18n };
 }
@@ -66,7 +66,6 @@ export function useTranslation(ns?: Namespace, language?: string) {
 /**
  * A simplified implementation of react-i18next's `Trans` component for Preact.
  *
- * @see https://react.i18next.com/latest/trans-component
  * @param i18nKey The translation key to use.
  * @param ns The namespace to use for the translation.
  * @param language (optional) A specific language to use. If not provided, auto-detection will be used.
