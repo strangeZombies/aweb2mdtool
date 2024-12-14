@@ -20,7 +20,7 @@ export class ErrorBoundary extends Component {
         <div class="alert alert-error p-2">
           <div>
             <h3 class="font-bold leading-normal">
-              <Trans ns="common" i18nKey="Something went wrong." />
+              <Trans ns="common" i18nKey="SomethingWrong." />
             </h3>
             <p class="text-xs">
               <Trans ns="common" i18nKey="Error:" /> {this.state.error}

@@ -1,14 +1,11 @@
-import { render } from 'preact';
-import { App } from '@/core/app';
-import logger from '@/utils/logger';
-import packageJson from '@/../package.json';
-import styles from '@/index.css?inline';
-import RuntimeLogsModule from '@/modules/runtime-logs';
-
-const ROOT_DIV_ID = `${packageJson.name}Div`;
+import { render as preactRender } from 'preact';
+import { App as PreactApp } from '@/core/app';
+import log from '@/utils/logger';
+import pkgJson from '@/../package.json';
+const ROOT_DIV_ID: string = `${pkgJson.name}Global`;
 
 // 全局样式字符串
-const GLOBAL_STYLES = `
+const GLOBAL_STYLES: string = `
   #${ROOT_DIV_ID} {
     all: unset !important;
     width: auto;
@@ -18,10 +15,10 @@ const GLOBAL_STYLES = `
 
 /**
  * 创建样式元素
- * @param {string} cssText - 样式文本
+ * @param {string} cssText CSS 字符串
  * @returns {HTMLStyleElement} 样式元素
  */
-function createStyleElement(cssText) {
+function createStyleElement(cssText: string): HTMLStyleElement {
   const styleElement = document.createElement('style');
   styleElement.textContent = cssText;
   return styleElement;
@@ -31,14 +28,14 @@ function createStyleElement(cssText) {
  * 检查当前窗口是否为顶级窗口
  * @returns {boolean} 是否为顶级窗口
  */
-function isTopWindow() {
+function isTopWindow(): boolean {
   return window.top === window.self;
 }
 
 /**
  * 创建并挂载 Shadow DOM
  */
-function createShadowDom() {
+function createShadowDom(): void {
   if (!isTopWindow()) {
     // 如果在 iframe 中，则不执行
     return;
@@ -46,27 +43,22 @@ function createShadowDom() {
 
   try {
     // 创建根 div
-    const rootDiv = document.createElement('div');
+    const rootDiv: HTMLDivElement = document.createElement('div');
     rootDiv.id = ROOT_DIV_ID;
-
     // 添加全局样式元素到文档头部
     document.head.appendChild(createStyleElement(GLOBAL_STYLES));
-
     // 将根 div 添加到文档主体
     document.body.appendChild(rootDiv);
-
     // 创建 Shadow DOM
-    const shadowRoot = rootDiv.attachShadow({ mode: 'open' });
-
+    const shadowRoot: ShadowRoot = rootDiv.attachShadow({ mode: 'open' });
     // 创建并注入 Shadow DOM 样式
-    shadowRoot.appendChild(createStyleElement(styles)); // 使用导入的样式
-
+    //const styleElement: HTMLStyleElement = createStyleElement(Object.values(styles).join(' '));
+    //shadowRoot.appendChild(styleElement);
     // 渲染应用到 Shadow DOM
-    render(<App />, shadowRoot);
-
-    logger.info('Shadow DOM created and App rendered.');
+    preactRender(<PreactApp />, shadowRoot);
+    log.info('Shadow DOM created and App rendered.');
   } catch (error) {
-    logger.error('Error creating Shadow DOM:', error);
+    log.error('Error creating Shadow DOM:', error);
   }
 }
 

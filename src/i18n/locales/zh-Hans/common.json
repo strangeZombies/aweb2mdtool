@@ -12,5 +12,7 @@
   "RelativeFolder": "相对位置",
   "BaseTagSettings": "添加标签",
   "ShowToggleButton": "开启快捷按钮",
-  "ShowToggleButtonTips":"界面将立即隐藏或显示,可以从菜单重新打开。"
+  "ShowToggleButtonTips":"界面将立即隐藏或显示,可以从菜单重新打开。",
+  "SomethingWrong.": "出错误了",
+  "Error:":"错误："
 }

@@ -1,6 +1,7 @@
 import { JSX } from 'preact';
 import { cx } from '@/utils/common';
 import { ErrorBoundary } from './error-boundary';
+import styles from '@/index.module.css'; // 使用模块化 CSS
 // #region Modal
 type ModalProps = {
   show?: boolean;
@@ -9,7 +10,6 @@ type ModalProps = {
   title?: string;
   class?: string;
 };
-
 /**
  * Common template for modals.
  */
@@ -39,7 +39,7 @@ export function Modal({ show, onClose, title, children, class: className }: Moda
   );
 }
 
-export const RMdIcon = (props: SVGProps<SVGSVGElement>) => (
+export const RMdIcon = (props: JSX.IntrinsicElements['svg']) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" {...props}>
     <path
       fill="currentColor"
@@ -48,7 +48,7 @@ export const RMdIcon = (props: SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export const CloseIcon = (props: SVGProps<SVGSVGElement>) => (
+export const CloseIcon = (props: JSX.IntrinsicElements['svg']) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="1.5em"
@@ -64,7 +64,7 @@ export const CloseIcon = (props: SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export function LsiconSettingOutline(props: SVGProps<SVGSVGElement>) {
+export function LsiconSettingOutline(props: JSX.IntrinsicElements['svg']) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -80,7 +80,7 @@ export function LsiconSettingOutline(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
-export function TablerHelp(props: SVGProps<SVGSVGElement>) {
+export function TablerHelp(props: JSX.IntrinsicElements['svg']) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>
       <g

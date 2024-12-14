@@ -5,12 +5,15 @@ import packageJson from '@/../package.json';
 
 // 假设 AppOptions 类型如下
 export interface AppOptions {
-  theme?: string;
+  theme: string;
   debug?: boolean;
-  showControlPanel?: boolean;
-  showToggleButton?: boolean;
+  showControlPanel: boolean;
+  showToggleButton: boolean;
   language?: string;
   version?: string;
+  vault?: string;
+  folder?: string;
+  baseTags?: string;
 }
 
 // 默认应用选项
@@ -47,9 +50,12 @@ export class AppOptionsManager {
   constructor() {
     this.loadAppOptions();
   }
-  // 修改 get 方法支持批量获取选项
+  // 待修改 get 方法支持批量获取选项
 
-  public get<T extends keyof AppOptions>(key: T, defaultValue?: AppOptions[T]): AppOptions[T] {
+  public get<T extends keyof AppOptions>(
+    key: T,
+    defaultValue?: AppOptions[T],
+  ): AppOptions[T] | undefined {
     return this.appOptions[key] ?? defaultValue;
   }
 

@@ -8,13 +8,13 @@ import logger from '@/utils/logger';
 import { options } from './options';
 import { RMdIcon, CloseIcon } from '@/components/common';
 import { Settings } from './settings';
-
+import styles from '@/index.module.css'; // 使用模块化 CSS
 export function App() {
   const { t } = useTranslation();
   // 获取多个选项并解构到信号中
-  const showControlPanel = useSignal<boolean>(options.get('showControlPanel') ?? false);
-  const theme = useSignal<boolean>(options.get('theme'));
-  const showToggleButton = useSignal<boolean>(options.get('showToggleButton') ?? true);
+  const showControlPanel = useSignal<boolean | undefined>(options.get('showControlPanel') ?? false);
+  const theme = useSignal<string | undefined>(options.get('theme'));
+  const showToggleButton = useSignal<boolean | undefined>(options.get('showToggleButton') ?? true);
 
   // Remember the last state of the control panel.
   const toggleControlPanel = () => {
@@ -49,6 +49,8 @@ export function App() {
 
   return (
     <Fragment>
+      <div class={styles.card}>dd</div>
+      {`${styles.card}`}
       {showToggleButton.value && (
         <Fragment>
           {/* To show and hide the main UI. */}
@@ -82,9 +84,7 @@ export function App() {
                 <CloseIcon />
               </div>
             </header>
-            <p class="text-sm text-base-content text-opacity-70 mb-1 leading-none">
-              {t('Browse around to capture more data.')}
-            </p>
+            <p class="text-sm text-base-content text-opacity-70 mb-1 leading-none">这里是内容</p>
             <div class="divider mt-0 mb-0"></div>
             {/* Extensions UI. */}
             <main></main>

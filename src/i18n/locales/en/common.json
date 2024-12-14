@@ -14,5 +14,7 @@
   "ShowToggleButtonTips": "The Interface will be hidden or displayed immediately, You can reopen it from the menu.",
   "DebugMode": "debug mode",
   "DebugModeTips": "Enable this option to debug the script and check for errors.",
-  "ExportToMd": "export to markdown"
+  "ExportToMd": "export to markdown",
+  "SomethingWrong.":"Something went wrong.",
+  "Error:": "Error:"
   }

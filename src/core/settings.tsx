@@ -30,7 +30,6 @@ export function Settings() {
       </div>
       {/* Settings modal. */}
       <Modal title={t('Settings')} show={showSettings} onClose={toggleSettings} class="max-w-lg">
-        {' '}
         <p class={styles.subtitle}>{t('General')}</p>
         <div class={cx(styles.block, 'flex-col')}>
           <label class={styles.item}>
