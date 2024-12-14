@@ -9,7 +9,7 @@ import tailwindcss from 'tailwindcss'; // 用于自动生成 Tailwind CSS 样式
 import legacy from '@vitejs/plugin-legacy'; // 用于支持旧版浏览器
 import monkey, { cdn, util } from 'vite-plugin-monkey'; // 用于构建 userscript;
 import { shadowStyle } from 'vite-plugin-shadow-style';
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 //import { patchCssModules } from 'vite-css-modules';
 //import react from '@vitejs/plugin-react';
 //import { CssModuleTypes } from './watching-css-modules';
