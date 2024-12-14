@@ -1,6 +1,6 @@
-import daisyui from "daisyui";
+import daisyui from 'daisyui';
 
-module.exports = {
+export default {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {},
