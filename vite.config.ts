@@ -9,7 +9,7 @@ import tailwindcss from 'tailwindcss'; // 用于自动生成 Tailwind CSS 样式
 import legacy from '@vitejs/plugin-legacy'; // 用于支持旧版浏览器
 import monkey, { cdn, util } from 'vite-plugin-monkey'; // 用于构建 userscript;
 import { shadowStyle } from 'vite-plugin-shadow-style';
-import { patchCssModules } from 'vite-css-modules';
+//import { patchCssModules } from 'vite-css-modules';
 //import react from '@vitejs/plugin-react';
 //import { CssModuleTypes } from './watching-css-modules';
 // https://vitejs.dev/config/
@@ -26,9 +26,9 @@ export default defineConfig({
       plugins: [
         preact(),
         // Here it goes!
-        patchCssModules({
-          generateSourceTypes: true,
-        }),
+        //patchCssModules({
+        //  generateSourceTypes: true,
+        //}),
         // ← This is all you need to add!
         shadowStyle(),
         //CssModuleTypes(),
