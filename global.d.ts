@@ -105,4 +105,5 @@ declare global {
   function GM_openInTab(name: string): string;
 }
 declare const SHADOW_STYLE: string;
+
 export {};
