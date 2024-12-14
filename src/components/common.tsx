@@ -1,7 +1,7 @@
 import { JSX } from 'preact';
 import { cx } from '@/utils/common';
 import { ErrorBoundary } from './error-boundary';
-import styles from '@/index.module.css'; // 使用模块化 CSS
+
 // #region Modal
 type ModalProps = {
   show?: boolean;

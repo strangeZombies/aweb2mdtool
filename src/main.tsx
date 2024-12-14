@@ -2,8 +2,8 @@ import { render as preactRender } from 'preact';
 import { App as PreactApp } from '@/core/app';
 import log from '@/utils/logger';
 import pkgJson from '@/../package.json';
+import styles from '@/index.css?inline';
 const ROOT_DIV_ID: string = `${pkgJson.name}Global`;
-
 // 全局样式字符串
 const GLOBAL_STYLES: string = `
   #${ROOT_DIV_ID} {
@@ -52,8 +52,8 @@ function createShadowDom(): void {
     // 创建 Shadow DOM
     const shadowRoot: ShadowRoot = rootDiv.attachShadow({ mode: 'open' });
     // 创建并注入 Shadow DOM 样式
-    //const styleElement: HTMLStyleElement = createStyleElement(Object.values(styles).join(' '));
-    //shadowRoot.appendChild(styleElement);
+    const styleElement: HTMLStyleElement = createStyleElement(Object.values(styles).join(''));
+    shadowRoot.appendChild(styleElement);
     // 渲染应用到 Shadow DOM
     preactRender(<PreactApp />, shadowRoot);
     log.info('Shadow DOM created and App rendered.');

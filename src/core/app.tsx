@@ -8,7 +8,7 @@ import logger from '@/utils/logger';
 import { options } from './options';
 import { RMdIcon, CloseIcon } from '@/components/common';
 import { Settings } from './settings';
-import styles from '@/index.css'; // 使用模块化 CSS
+
 export function App() {
   const { t } = useTranslation();
   // 获取多个选项并解构到信号中
@@ -49,8 +49,6 @@ export function App() {
 
   return (
     <Fragment>
-      <div class={styles.card}>dd</div>
-      {`${styles.card}`}
       {showToggleButton.value && (
         <Fragment>
           {/* To show and hide the main UI. */}

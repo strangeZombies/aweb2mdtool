@@ -21,7 +21,7 @@
     "target": "ES2022"
   },
   "include": [
-    "src",
-    "./auto-imports.d.ts", "global.d.ts","watching-css-modules.ts", // 确保自动导入声明文件包含在编译范围内
+    "src", //,"watching-css-modules.ts"
+    "./auto-imports.d.ts", "global.d.ts", // 确保自动导入声明文件包含在编译范围内
   ]
 }
