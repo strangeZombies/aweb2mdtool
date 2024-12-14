@@ -3,7 +3,9 @@ import { App as PreactApp } from '@/core/app';
 import log from '@/utils/logger';
 import pkgJson from '@/../package.json';
 import styles from '@/index.css?inline';
+
 const ROOT_DIV_ID: string = `${pkgJson.name}Global`;
+
 // 全局样式字符串
 const GLOBAL_STYLES: string = `
   #${ROOT_DIV_ID} {
@@ -33,11 +35,24 @@ function isTopWindow(): boolean {
 }
 
 /**
+ * 检查根 div 是否已存在
+ * @returns {boolean} 根 div 是否已存在
+ */
+function isRootDivExists(): boolean {
+  return document.getElementById(ROOT_DIV_ID) !== null;
+}
+
+/**
  * 创建并挂载 Shadow DOM
  */
 function createShadowDom(): void {
   if (!isTopWindow()) {
     // 如果在 iframe 中，则不执行
+    return;
+  }
+
+  if (isRootDivExists()) {
+    log.info('Root div already exists, skipping creation.');
     return;
   }
 
@@ -52,7 +67,7 @@ function createShadowDom(): void {
     // 创建 Shadow DOM
     const shadowRoot: ShadowRoot = rootDiv.attachShadow({ mode: 'open' });
     // 创建并注入 Shadow DOM 样式
-    const styleElement: HTMLStyleElement = createStyleElement(Object.values(styles).join(''));
+    const styleElement: HTMLStyleElement = createStyleElement(styles);
     shadowRoot.appendChild(styleElement);
     // 渲染应用到 Shadow DOM
     preactRender(<PreactApp />, shadowRoot);

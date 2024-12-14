@@ -8,7 +8,7 @@ import tailwindcss from 'tailwindcss'; // 用于自动生成 Tailwind CSS 样式
 //e import remToPx from 'postcss-rem-to-pixel-next'; // 用于将 rem 单位转为 px
 import legacy from '@vitejs/plugin-legacy'; // 用于支持旧版浏览器
 import monkey, { cdn, util } from 'vite-plugin-monkey'; // 用于构建 userscript;
-import { shadowStyle } from 'vite-plugin-shadow-style';
+//import { shadowStyle } from 'vite-plugin-shadow-style';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 //import { patchCssModules } from 'vite-css-modules';
 //import react from '@vitejs/plugin-react';
@@ -31,7 +31,7 @@ export default defineConfig({
         //  generateSourceTypes: true,
         //}),
         // ← This is all you need to add!
-        shadowStyle(),
+        //shadowStyle({ iife: true }),
         //CssModuleTypes(),
       ],
     },
@@ -76,12 +76,11 @@ export default defineConfig({
         icon: 'https://vitejs.dev/logo.svg',
         namespace: 'https://github.com/strangezombies',
         match: ['*://*/*'], // 匹配 URL
-        require: [
-          'https://cdn.jsdelivr.net/npm/preact@latest/dist/preact.min.js',
-          'https://cdn.jsdelivr.net/npm/@latest/latest.min.js',
-          'https://cdn.jsdelivr.net/npm/preact@latest/hooks/dist/hooks.umd.js',
-          'https://cdn.jsdelivr.net/npm/@preact/signals-core@latest/dist/signals-core.min.js',
-        ],
+        //require: [
+        //  'https://cdn.jsdelivr.net/npm/@latest/latest.min.js',
+        //  'https://cdn.jsdelivr.net/npm/i18next@24.1.0/i18next.min.js',
+        //  'https://cdn.jsdelivr.net/npm/@preact/signals@1.3.1/dist/signals.min.js',
+        //],
         version: '0.0.1', // 示例：设置脚本版本
         author: 'strangeZombies', // 示例：设置作者
         grant: [
@@ -95,10 +94,10 @@ export default defineConfig({
       },
       build: {
         externalGlobals: {
-          i18next: cdn.jsdelivr('i18next', 'dist/i18next.min.js'),
-          preact: cdn.jsdelivr('preact', 'dist/preact.min.js'),
-          'preact/hooks': cdn.jsdelivr('preact', 'hooks/dist/hooks.umd.js'),
-          '@preact/signals': cdn.jsdelivr('preact-signals', 'dist/signals.umd.js'),
+          //i18next: cdn.jsdelivr('i18next', 'i18next.min.js'),
+          //preact: cdn.jsdelivr('preact', 'dist/preact.min.js'),
+          //  'preact/hooks': cdn.jsdelivr('preact', 'hooks/dist/hooks.umd.js'),
+          // '@preact/signals': cdn.jsdelivr('signals', 'dist/signals.min.js'),
         },
       },
     }),
