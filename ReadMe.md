@@ -1,3 +1,12 @@
+2024.12.15 1:27 utc+8
+自动调用word，obsidian 通过 协议://xx
+ 多次弹出始终允许
+自动生效网站黑白名单
+批量打开页面并下载
+选择部分复制粘贴
+快捷键设置
+设置 front header 是yaml格式或者其他
+
 插件的快捷件为 ctrl+w+d
 [text](https://www.cnblogs.com/mq0036/p/17509937.html)
 

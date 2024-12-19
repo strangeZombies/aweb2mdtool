@@ -14,6 +14,7 @@ export interface AppOptions {
   vault?: string;
   folder?: string;
   baseTags?: string;
+  disabledExtensions?: string[];
 }
 
 // 默认应用选项
@@ -24,6 +25,7 @@ export const DEFAULT_APP_OPTIONS: AppOptions = {
   showToggleButton: true,
   language: '',
   version: packageJson.version,
+  disabledExtensions: ['UnknownModule'],
 };
 
 // 可用主题列表

@@ -3,6 +3,11 @@ import { App as PreactApp } from '@/core/app';
 import log from '@/utils/logger';
 import pkgJson from '@/../package.json';
 import styles from '@/index.css?inline';
+import extensions from '@/core/extensions';
+import RuntimeLogsModule from '@/modules/runtime-logs';
+
+extensions.add(RuntimeLogsModule);
+extensions.start();
 
 const ROOT_DIV_ID: string = `${pkgJson.name}Global`;
 
