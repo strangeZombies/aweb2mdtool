@@ -14,5 +14,8 @@
   "ShowToggleButton": "开启快捷按钮",
   "ShowToggleButtonTips":"界面将立即隐藏或显示,可以从菜单重新打开。",
   "SomethingWrong.": "出错误了",
-  "Error:":"错误："
+  "Error":"错误",
+  "noError": "没有错误",
+  "report": "报告",
+  "App options loaded": "插件配置已加载"
 }
