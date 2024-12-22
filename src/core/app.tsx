@@ -7,11 +7,25 @@ import { cx } from '@/utils/common';
 import logger from '@/utils/logger';
 import { options } from './options';
 import { RMdIcon, CloseIcon } from '@/components/common';
-
 import extensionManager, { Extension } from './extensions';
 import { Settings } from './settings';
-
+import { convertPageToMarkdown, convertSelectionToMarkdown } from '@/utils/TurndownConverter';
 export function App() {
+  async function generateMarkdown() {
+    try {
+      const markdownContent = await convertPageToMarkdown();
+      console.log(markdownContent); // This will print the generated markdown with YAML front matter
+    } catch (error) {
+      console.error('Error generating markdown:', error);
+    }
+  }
+
+  // Trigger markdown generation
+  generateMarkdown();
+
+  // 转换选定的文本为 Markdown
+  //const selectedMarkdown = convertSelectionToMarkdown();
+  //console.log(selectedMarkdown);
   const { t } = useTranslation();
   // 获取多个选项并解构到信号中
   const extensions = useSignal<Extension[]>([]);

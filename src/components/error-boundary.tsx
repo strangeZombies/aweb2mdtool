@@ -23,7 +23,7 @@ export class ErrorBoundary extends Component {
               <Trans ns="common" i18nKey="SomethingWrong." />
             </h3>
             <p class="text-xs">
-              <Trans ns="common" i18nKey="Error:" /> {this.state.error}
+              <Trans ns="common" i18nKey="Error" /> {this.state.error}
             </p>
           </div>
         </div>
