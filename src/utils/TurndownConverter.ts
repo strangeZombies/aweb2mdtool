@@ -2,6 +2,7 @@ import YAML from 'yaml';
 import TurndownService from 'turndown';
 import { gfm } from '@joplin/turndown-plugin-gfm';
 import { Readability } from '@mozilla/readability';
+import urlMetadata from 'url-metadata';
 
 class TurndownConverter {
   private turndownService: TurndownService;
@@ -14,70 +15,66 @@ class TurndownConverter {
       codeBlockStyle: 'fenced',
       emDelimiter: '*',
     });
-    this.turndownService.use(gfm); // Use the gfm plugin directly
+    this.turndownService.use(gfm);
     this.turndownService.remove('style');
   }
 
-  private formatDate(date = new Date()) {
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(date.getUTCDate()).padStart(2, '0');
-    const hours = String(date.getUTCHours()).padStart(2, '0');
-    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
-
-    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
-  }
-  /**
-   * Generate YAML front matter from the document.
-   * @returns {string} The YAML front matter.
-   */
-  private generateYamlHeader(): string {
-    return YAML.stringify(
-      {
-        category: '[[Clippings]]',
-        author: this.getAuthor() || '匿名',
-        title: document.title || 'Untitled Document',
-        source: window.location.href,
-        clipped: this.formatDate(), // Only the date part
-        published: '', // Empty published field
-        topics: '', // Empty topics field
-        tags: ['clippings', 'obsidian快捷键'],
-      },
-      { indent: 2 },
-    ); // YAML indentation
+  private formatDate(date: Date = new Date()): string {
+    return date.toISOString(); // Simplified to use ISO string format
   }
 
-  /**
-   * Get the author from the page's meta tags or other elements.
-   * @returns {string|null} The author name or null if not found.
-   */
-  private getAuthor(): string | null {
-    const authorMeta = document.querySelector('meta[name="author"]');
-    return authorMeta ? authorMeta.getAttribute('content') : null;
+  private async fetchMetadata(url: string): Promise<any> {
+    try {
+      return await urlMetadata(url);
+    } catch (error) {
+      console.error('Error fetching metadata:', error);
+      return {};
+    }
   }
 
-  /**
-   * Convert the entire page to Markdown using Readability.
-   * @returns {string} The converted Markdown with YAML front matter.
-   */
-  public convertPageToMarkdown(): string {
+  private async generateYamlHeader(): Promise<string> {
+    const title = document.title || 'Untitled Document';
+    const url = window.location.href;
+    const metadata = await this.fetchMetadata(url);
+
+    const { description = '', author = '匿名', keywords = '' } = metadata;
+
+    // Extract article tags from meta tags
+    const articleTagsArray = Array.from(
+      document.querySelectorAll('meta[property="article:tag"]'),
+    ).map((tag) => tag.content);
+
+    // Extract publication date from meta tags
+    const publicationDateMeta = document.querySelector('meta[property="article:published_time"]');
+    const published = publicationDateMeta ? publicationDateMeta.getAttribute('content') : '';
+
+    const yamlObj = {
+      category: '[[Clippings]]',
+      author,
+      title,
+      source: url,
+      clipped: this.formatDate(),
+      published, // Include the extracted publication date
+      description,
+      tags: [...new Set([...articleTagsArray, ...keywords.split(',').map((tag) => tag.trim())])], // Combine and deduplicate tags
+    };
+
+    return YAML.stringify(yamlObj, { indent: 2 });
+  }
+
+  public async convertPageToMarkdown(): Promise<string> {
     const docClone = document.cloneNode(true) as Document;
     const article = new Readability(docClone).parse();
 
-    if (article) {
-      const yamlHeader = this.generateYamlHeader();
-      const markdownContent = this.turndownService.turndown(article.content);
-      return `---\n${yamlHeader}---\n\n${markdownContent}`;
+    if (!article) {
+      throw new Error('Could not parse the article.');
     }
-    console.error('Could not parse the article.');
-    return '';
+
+    const yamlHeader = await this.generateYamlHeader();
+    const markdownContent = this.turndownService.turndown(article.content);
+    return `---\n${yamlHeader}---\n\n${markdownContent}`;
   }
 
-  /**
-   * Convert the selected text to Markdown.
-   * @returns {string|null} The converted Markdown or null if no text is selected.
-   */
   public convertSelectionToMarkdown(): string | null {
     const selection = window.getSelection();
     if (selection && selection.rangeCount > 0) {
@@ -86,8 +83,7 @@ class TurndownConverter {
       tempDiv.appendChild(range.cloneContents());
       return this.turndownService.turndown(tempDiv.innerHTML);
     }
-    console.error('No text selected.');
-    return null;
+    throw new Error('No text selected.');
   }
 }
 
@@ -95,5 +91,5 @@ class TurndownConverter {
 const turndownConverter = new TurndownConverter();
 
 // Export the methods for global access
-export const convertPageToMarkdown = () => turndownConverter.convertPageToMarkdown();
+export const convertPageToMarkdown = async () => await turndownConverter.convertPageToMarkdown();
 export const convertSelectionToMarkdown = () => turndownConverter.convertSelectionToMarkdown();
