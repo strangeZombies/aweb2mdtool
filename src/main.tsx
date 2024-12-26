@@ -5,7 +5,9 @@ import pkgJson from '@/../package.json';
 import styles from '@/index.css?inline';
 import extensions from '@/core/extensions';
 import RuntimeLogsModule from '@/modules/runtime-logs';
+import Markdown2LocalModule from '@/modules/markdown2local';
 
+extensions.add(Markdown2LocalModule);
 extensions.add(RuntimeLogsModule);
 extensions.start();
 

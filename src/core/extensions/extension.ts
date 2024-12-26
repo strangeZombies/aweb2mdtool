@@ -1,6 +1,5 @@
 import { ComponentType } from 'preact';
 import type { ExtensionManager } from './manager';
-
 export interface ExtensionConstructor {
   new (manager: ExtensionManager): Extension;
 }
@@ -28,10 +27,6 @@ export type Interceptor = (
 //e   CUSTOM = 'custom',
 //e   NONE = 'none',
 //e }
-export enum ExtensionType {
-  CUSTOM = 'custom',
-  NONE = 'none',
-}
 
 /**
  * The base class for all extensions.
@@ -39,7 +34,6 @@ export enum ExtensionType {
 export abstract class Extension {
   public name: string = '';
   public enabled = true;
-  public type: ExtensionType = ExtensionType.NONE;
 
   protected manager: ExtensionManager;
 

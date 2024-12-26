@@ -1,5 +1,5 @@
 {
-  "AWeb2MdTool": "a web -> markdown tool",
+  "AWeb2MdTool": "a web to markdown tool",
   "toggleMenu": "toggle control panel",
   "Close": "close",
   "Theme": "theme",
@@ -16,5 +16,11 @@
   "DebugModeTips": "Enable this option to debug the script and check for errors.",
   "ExportToMd": "export to markdown",
   "SomethingWrong.":"Something went wrong.",
-  "Error": "Error"
+  "Error": "Error",
+  "Local": "local",
+  "Obsidian": "Obsidian",
+  "Other": "Other",
+  "ShowResult":"Show Result",
+  "DownloadTo": "Download To",
+  "MarkdownResult": "Markdown File Result"
   }

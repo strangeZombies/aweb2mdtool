@@ -4,6 +4,25 @@ import { gfm } from '@joplin/turndown-plugin-gfm';
 import { Readability } from '@mozilla/readability';
 import urlMetadata from 'url-metadata';
 
+// 定义自定义的 Metadata 接口
+interface Metadata {
+  title?: string;
+  description?: string;
+  author?: string;
+  keywords?: string;
+}
+
+interface YamlHeader {
+  category: string;
+  author: string;
+  title: string;
+  source: string;
+  clipped: string;
+  published: string | null;
+  description: string;
+  tags: string[];
+}
+
 class TurndownConverter {
   private turndownService: TurndownService;
 
@@ -23,7 +42,7 @@ class TurndownConverter {
     return date.toISOString(); // Simplified to use ISO string format
   }
 
-  private async fetchMetadata(url: string): Promise<any> {
+  private async fetchMetadata(url: string): Promise<Metadata | object> {
     try {
       return await urlMetadata(url);
     } catch (error) {
@@ -37,18 +56,18 @@ class TurndownConverter {
     const url = window.location.href;
     const metadata = await this.fetchMetadata(url);
 
-    const { description = '', author = '匿名', keywords = '' } = metadata;
+    const { description = '', author = '匿名', keywords = '' } = metadata as Metadata;
 
     // Extract article tags from meta tags
     const articleTagsArray = Array.from(
       document.querySelectorAll('meta[property="article:tag"]'),
-    ).map((tag) => tag.content);
+    ).map((tag) => tag.getAttribute('content') || '');
 
     // Extract publication date from meta tags
     const publicationDateMeta = document.querySelector('meta[property="article:published_time"]');
     const published = publicationDateMeta ? publicationDateMeta.getAttribute('content') : '';
 
-    const yamlObj = {
+    const yamlObj: YamlHeader = {
       category: '[[Clippings]]',
       author,
       title,

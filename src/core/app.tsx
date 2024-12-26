@@ -9,23 +9,8 @@ import { options } from './options';
 import { RMdIcon, CloseIcon } from '@/components/common';
 import extensionManager, { Extension } from './extensions';
 import { Settings } from './settings';
-import { convertPageToMarkdown, convertSelectionToMarkdown } from '@/utils/TurndownConverter';
+
 export function App() {
-  async function generateMarkdown() {
-    try {
-      const markdownContent = await convertPageToMarkdown();
-      console.log(markdownContent); // This will print the generated markdown with YAML front matter
-    } catch (error) {
-      console.error('Error generating markdown:', error);
-    }
-  }
-
-  // Trigger markdown generation
-  generateMarkdown();
-
-  // 转换选定的文本为 Markdown
-  //const selectedMarkdown = convertSelectionToMarkdown();
-  //console.log(selectedMarkdown);
   const { t } = useTranslation();
   // 获取多个选项并解构到信号中
   const extensions = useSignal<Extension[]>([]);
@@ -74,10 +59,11 @@ export function App() {
           {/* To show and hide the main UI. */}
           <div
             onClick={toggleControlPanel}
-            class="z-10 group w-12 h-12 fixed top-[60%] left-[-20px] cursor-pointer bg-transparent fill-base-content"
+            data-theme={currentTheme.value}
+            class="z-10 group w-12 h-12 fixed top-[60%] right-[-30px] cursor-pointer bg-transparent fill-base-content"
           >
-            <div class="w-full h-full origin origin-[bottom_center] transition-all duration-200 group-hover:translate-x-[5px] group-hover:rotate-[20deg] opacity-50 group-hover:opacity-90">
-              <RMdIcon data-theme={currentTheme.value} class="w-2/3 h-2/3 select-none" />
+            <div class="w-full h-full origin origin-[bottom_center] transition-all duration-200 group-hover:translate-x-[5px] group-hover:rotate-[-30deg] opacity-50 group-hover:opacity-90">
+              <RMdIcon class="w-2/3 h-2/3 select-none" />
             </div>
           </div>
 
@@ -85,8 +71,8 @@ export function App() {
           <section
             data-theme={currentTheme.value}
             class={cx(
-              'z-10 card card-compact bg-base-100 fixed border shadow-xl w-80 leading-loose text-base-content px-4 py-3 rounded-box border-solid border-neutral-content border-opacity-50 left-8 top-24 transition-transform duration-500',
-              showControlPanel.value ? 'translate-x-0 transform-none' : 'translate-x-[-500px]',
+              'z-10 card card-compact bg-base-100 fixed border shadow-xl w-80 leading-loose text-base-content px-4 py-3 rounded-box border-solid border-neutral-content border-opacity-50 right-8 top-24 transition-transform duration-500',
+              showControlPanel.value ? 'translate-x-0 transform-none' : 'translate-x-[500px]',
             )}
           >
             {/* Card title. */}
@@ -102,9 +88,20 @@ export function App() {
                 <CloseIcon />
               </div>
             </header>
-            <p class="text-sm text-base-content text-opacity-70 mb-1 leading-none">这里是内容</p>
-            {/* Extensions UI. */}
             <main>
+              {extensions.value.map((ext) => {
+                const Component = ext.render();
+                if (ext.enabled && Component) {
+                  return (
+                    <ErrorBoundary>
+                      <Component key={ext.name} extension={ext} />
+                    </ErrorBoundary>
+                  );
+                }
+              })}
+            </main>
+            {/* Extensions UI. */}
+            {/*<main>
               {extensions.value.map((ext) => {
                 const Component = ext.render();
                 if (ext.enabled && Component) {
@@ -116,7 +113,7 @@ export function App() {
                 }
                 return null;
               })}
-            </main>
+            </main>*/}
           </section>
         </Fragment>
       )}

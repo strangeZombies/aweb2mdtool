@@ -2,6 +2,30 @@ import { JSX } from 'preact';
 import { cx } from '@/utils/common';
 import { ErrorBoundary } from './error-boundary';
 
+type CheckboxLabelProps = {
+  id: string;
+  checked: boolean;
+  onChange: () => void;
+  icon?: JSX.Element;
+  label: string;
+};
+
+/**
+ * A common checkbox label component with an icon and label text.
+ */
+export const CheckboxLabel = ({ id, checked, onChange, icon, label }: CheckboxLabelProps) => (
+  <label
+    htmlFor={id}
+    className="cursor-pointer label join-item flex items-center transition-all duration-300 hover:bg-gray-200 rounded"
+  >
+    <input id={id} type="checkbox" className="hidden" checked={checked} onChange={onChange} />
+    <span className={cx('label-text flex items-center badge', checked ? 'badge-primary' : '')}>
+      {icon}
+      <span className="ml-1">{label}</span>
+    </span>
+  </label>
+);
+
 // #region ExtensionPanel
 type ExtensionPanelProps = {
   title: string;
@@ -10,12 +34,15 @@ type ExtensionPanelProps = {
   onClick?: () => void;
   children?: JSX.Element | JSX.Element[];
   indicatorColor?: string;
+  titleIcon: JSX.Element | JSX.Element[];
 };
+
 /**
  * Common template for an extension panel.
  */
 export function ExtensionPanel({
   title,
+  titleIcon,
   description,
   children,
   onClick,
@@ -27,7 +54,7 @@ export function ExtensionPanel({
       {/* Card contents. */}
       <div class="h-12 flex items-center justify-start">
         <div class="relative flex h-4 w-4 mr-3 shrink-0">
-          {active && (
+          {!active && (
             <span
               class={cx(
                 'animate-ping absolute inline-flex h-full w-full rounded-full opacity-75',
@@ -42,7 +69,7 @@ export function ExtensionPanel({
           <p class="text-sm text-base-content leading-5 text-opacity-70 m-0">{description}</p>
         </div>
         <button class="btn btn-sm p-0 w-9 h-9" onClick={onClick}>
-          IconArrowUpRight
+          {titleIcon}
         </button>
       </div>
       {/* Modal entries. */}
@@ -143,6 +170,39 @@ export function TablerHelp(props: JSX.IntrinsicElements['svg']) {
         <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0-18 0m9 5v.01" />
         <path d="M12 13.5a1.5 1.5 0 0 1 1-1.5a2.6 2.6 0 1 0-3-4" />
       </g>
+    </svg>
+  );
+}
+
+export function VaadinDownload(props: JSX.IntrinsicElements['svg']) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16" {...props}>
+      <path fill="currentColor" d="M16 10h-5.5L8 12.5L5.5 10H0v6h16zM4 14H2v-2h2z" />
+      <path fill="currentColor" d="M10 6V0H6v6H3l5 5l5-5z" />
+    </svg>
+  );
+}
+
+export function PajamasDisk(props: JSX.IntrinsicElements['svg']) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16" {...props}>
+      <path
+        fill="currentColor"
+        fill-rule="evenodd"
+        d="M3 2.5h10a.5.5 0 0 1 .5.5v5.063A2 2 0 0 0 13 8H3q-.26 0-.5.063V3a.5.5 0 0 1 .5-.5M2.5 10v3a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5H3a.5.5 0 0 0-.5.5M1 10V3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2zm11 1.5a1 1 0 1 1-2 0a1 1 0 0 1 2 0m-4 1a1 1 0 1 0 0-2a1 1 0 0 0 0 2"
+        clip-rule="evenodd"
+      />
+    </svg>
+  );
+}
+
+export function SimpleIconsObsidian(props: JSX.IntrinsicElements['svg']) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" {...props}>
+      <path
+        fill="currentColor"
+        d="M19.355 18.538a68.967 68.959 0 0 0 1.858-2.954a.81.81 0 0 0-.062-.9c-.516-.685-1.504-2.075-2.042-3.362c-.553-1.321-.636-3.375-.64-4.377a1.7 1.7 0 0 0-.358-1.05l-3.198-4.064a4 4 0 0 1-.076.543c-.106.503-.307 1.004-.536 1.5c-.134.29-.29.6-.446.914l-.31.626c-.516 1.068-.997 2.227-1.132 3.59c-.124 1.26.046 2.73.815 4.481q.192.016.386.044a6.36 6.36 0 0 1 3.326 1.505c.916.79 1.744 1.922 2.415 3.5zM8.199 22.569q.11.019.22.02c.78.024 2.095.092 3.16.29c.87.16 2.593.64 4.01 1.055c1.083.316 2.198-.548 2.355-1.664c.114-.814.33-1.735.725-2.58l-.01.005c-.67-1.87-1.522-3.078-2.416-3.849a5.3 5.3 0 0 0-2.778-1.257c-1.54-.216-2.952.19-3.84.45c.532 2.218.368 4.829-1.425 7.531zM5.533 9.938q-.035.15-.098.29L2.82 16.059a1.6 1.6 0 0 0 .313 1.772l4.116 4.24c2.103-3.101 1.796-6.02.836-8.3c-.728-1.73-1.832-3.081-2.55-3.831zM9.32 14.01c.615-.183 1.606-.465 2.745-.534c-.683-1.725-.848-3.233-.716-4.577c.154-1.552.7-2.847 1.235-3.95q.17-.35.328-.664c.149-.297.288-.577.419-.86c.217-.47.379-.885.46-1.27c.08-.38.08-.72-.014-1.043c-.095-.325-.297-.675-.68-1.06a1.6 1.6 0 0 0-1.475.36l-4.95 4.452a1.6 1.6 0 0 0-.513.952l-.427 2.83c.672.59 2.328 2.316 3.335 4.711q.136.317.253.653"
+      />
     </svg>
   );
 }

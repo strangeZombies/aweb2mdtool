@@ -14,5 +14,11 @@
   "ShowToggleButton": "开启快捷按钮",
   "ShowToggleButtonTips":"界面将立即隐藏或显示,可以从菜单重新打开。",
   "SomethingWrong.": "出错误了",
-  "Error":"错误"
+  "Error":"错误",
+  "Local": "本地",
+  "Obsidian": "obsidian",
+  "Other": "其他",
+  "ShowResult": "显示结果",
+  "DownloadTo": "下载到",
+  "MarkdownResult": "文件内容"
 }
