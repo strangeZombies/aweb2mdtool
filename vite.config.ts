@@ -21,7 +21,7 @@ export default defineConfig({
     },
   },
   build: {
-    minify: false,
+    minify: true,
     rollupOptions: {
       external: (id) => id.endsWith('.old'),
       plugins: [
