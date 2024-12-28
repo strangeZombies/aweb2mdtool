@@ -4,16 +4,10 @@ import preact from '@preact/preset-vite'; // 用于支持 Preact 框架
 import AutoImport from 'unplugin-auto-import/vite'; // 用于自动导入
 import i18nextLoader from 'vite-plugin-i18next-loader'; // 用于加载 i18next 翻译文件
 import tailwindcss from 'tailwindcss'; // 用于自动生成 Tailwind CSS 样式
-//e import autoprefixer from 'autoprefixer'; // 用于自动添加 CSS 前缀
-//e import remToPx from 'postcss-rem-to-pixel-next'; // 用于将 rem 单位转为 px
 import legacy from '@vitejs/plugin-legacy'; // 用于支持旧版浏览器
 import monkey, { cdn, util } from 'vite-plugin-monkey'; // 用于构建 userscript;
-//import { shadowStyle } from 'vite-plugin-shadow-style';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
-//import { patchCssModules } from 'vite-css-modules';
-//import react from '@vitejs/plugin-react';
-//import { CssModuleTypes } from './watching-css-modules';
-// https://vitejs.dev/config/
+
 export default defineConfig({
   resolve: {
     alias: {
@@ -21,19 +15,10 @@ export default defineConfig({
     },
   },
   build: {
-    minify: true,
+    minify: false,
     rollupOptions: {
       external: (id) => id.endsWith('.old'),
-      plugins: [
-        preact(),
-        // Here it goes!
-        //patchCssModules({
-        //  generateSourceTypes: true,
-        //}),
-        // ← This is all you need to add!
-        //shadowStyle({ iife: true }),
-        //CssModuleTypes(),
-      ],
+      plugins: [preact()],
     },
     sourcemap: true,
   },
