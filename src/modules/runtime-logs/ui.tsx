@@ -30,7 +30,7 @@ function Logs({ lines }: LogsProps) {
 export function RuntimeLogsPanel() {
   return (
     <Fragment>
-      <div class="divider mt-0 mb-1"></div>
+      <div class="mt-0 mb-1"></div>
       <Logs lines={logLinesSignal} />
     </Fragment>
   );

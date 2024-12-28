@@ -51,7 +51,7 @@ class TurndownConverter {
     }
   }
 
-  private async generateYamlHeader(): Promise<string> {
+  private async generateYamlHeader(baseTags: string[]): Promise<string> {
     const title = document.title || 'Untitled Document';
     const url = window.location.href;
     const metadata = await this.fetchMetadata(url);
@@ -67,6 +67,14 @@ class TurndownConverter {
     const publicationDateMeta = document.querySelector('meta[property="article:published_time"]');
     const published = publicationDateMeta ? publicationDateMeta.getAttribute('content') : '';
 
+    const combinedTags = [
+      ...new Set([
+        ...baseTags,
+        ...articleTagsArray,
+        ...keywords.split(',').map((tag) => tag.trim()),
+      ]),
+    ];
+
     const yamlObj: YamlHeader = {
       category: '[[Clippings]]',
       author,
@@ -75,13 +83,13 @@ class TurndownConverter {
       clipped: this.formatDate(),
       published, // Include the extracted publication date
       description,
-      tags: [...new Set([...articleTagsArray, ...keywords.split(',').map((tag) => tag.trim())])], // Combine and deduplicate tags
+      tags: combinedTags, // Add combined tags
     };
 
     return YAML.stringify(yamlObj, { indent: 2 });
   }
 
-  public async convertPageToMarkdown(): Promise<string> {
+  public async convertPageToMarkdown(baseTags: string[]): Promise<{ title: string; md: string }> {
     const docClone = document.cloneNode(true) as Document;
     const article = new Readability(docClone).parse();
 
@@ -89,9 +97,10 @@ class TurndownConverter {
       throw new Error('Could not parse the article.');
     }
 
-    const yamlHeader = await this.generateYamlHeader();
+    const yamlHeader = await this.generateYamlHeader(baseTags);
     const markdownContent = this.turndownService.turndown(article.content);
-    return `---\n${yamlHeader}---\n\n${markdownContent}`;
+    const title = article.title || 'Untitled Document';
+    return { title, md: `---\n${yamlHeader}---\n\n${markdownContent}` };
   }
 
   public convertSelectionToMarkdown(): string | null {
@@ -110,5 +119,6 @@ class TurndownConverter {
 const turndownConverter = new TurndownConverter();
 
 // Export the methods for global access
-export const convertPageToMarkdown = async () => await turndownConverter.convertPageToMarkdown();
+export const convertPageToMarkdown = async (baseTags: string[]) =>
+  await turndownConverter.convertPageToMarkdown(baseTags);
 export const convertSelectionToMarkdown = () => turndownConverter.convertSelectionToMarkdown();

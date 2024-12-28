@@ -8,17 +8,32 @@ type CheckboxLabelProps = {
   onChange: () => void;
   icon?: JSX.Element;
   label: string;
+  disabled?: boolean;
 };
 
 /**
  * A common checkbox label component with an icon and label text.
  */
-export const CheckboxLabel = ({ id, checked, onChange, icon, label }: CheckboxLabelProps) => (
+export const CheckboxLabel = ({
+  id,
+  checked,
+  onChange,
+  icon,
+  label,
+  disabled: disable = false,
+}: CheckboxLabelProps) => (
   <label
     htmlFor={id}
     className="cursor-pointer label join-item flex items-center transition-all duration-300 hover:bg-gray-200 rounded"
   >
-    <input id={id} type="checkbox" className="hidden" checked={checked} onChange={onChange} />
+    <input
+      id={id}
+      type="checkbox"
+      className="hidden"
+      checked={checked}
+      disabled={disable}
+      onChange={onChange}
+    />
     <span className={cx('label-text flex items-center badge', checked ? 'badge-primary' : '')}>
       {icon}
       <span className="ml-1">{label}</span>

@@ -22,5 +22,8 @@
   "Other": "Other",
   "ShowResult":"Show Result",
   "DownloadTo": "Download To",
-  "MarkdownResult": "Markdown File Result"
+  "MarkdownResult": "Markdown File Result",
+  "LocalDownloadSettings": "Local Download Settings",
+  "DownloadPathUrl": "Download Path Url",
+  "SelectDownloadLocation": "Select Download Location"
   }

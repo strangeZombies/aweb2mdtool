@@ -18,6 +18,7 @@ export interface AppOptions {
   localChecked: boolean;
   obsidianChecked?: boolean;
   resultChecked?: boolean;
+  downloadPathUrl?: string;
 }
 
 // 默认应用选项
@@ -63,27 +64,6 @@ export class AppOptionsManager {
     defaultValue?: AppOptions[T],
   ): AppOptions[T] | undefined {
     return this.appOptions[key] ?? defaultValue;
-  }
-
-  // 通用的状态更新函数
-  public updateOption<T extends keyof AppOptions>(
-    key: T,
-    setter: (value: AppOptions[T]) => void,
-  ): void {
-    setter(this.appOptions[key]); // 更新选项
-    this.saveAppOptions();
-  }
-
-  // 批量获取选项
-  public getMultiple<K extends keyof AppOptions>(
-    keys: K[],
-    defaultValues?: Partial<Record<K, AppOptions[K]>>,
-  ): Partial<Record<K, AppOptions[K]>> {
-    const result: Partial<Record<K, AppOptions[K]>> = {};
-    keys.forEach((key) => {
-      result[key] = this.appOptions[key] ?? defaultValues?.[key];
-    });
-    return result;
   }
 
   public set<T extends keyof AppOptions>(key: T, value: AppOptions[T]): void {

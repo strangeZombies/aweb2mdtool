@@ -7,7 +7,7 @@
   "General": "通用",
   "Language": "语言",
   "DebugMode": "调试模式",
-  "ObsidianSoftwareSettings": "Obsidian软件相关设置",
+  "ObsidianSoftwareSettings": "Obsidian软件设置",
   "VaultSettings": "仓库名称",
   "RelativeFolder": "相对位置",
   "BaseTagSettings": "添加标签",
@@ -20,5 +20,8 @@
   "Other": "其他",
   "ShowResult": "显示结果",
   "DownloadTo": "下载到",
-  "MarkdownResult": "文件内容"
+  "MarkdownResult": "文件内容",
+  "LocalDownloadSettings": "本地下载设置",
+  "DownloadPathUrl": "下载路径",
+  "SelectDownloadLocation": "选择下载位置"
 }
